@@ -25,7 +25,27 @@ def main(argv: list[str] | None = None) -> int:
     discover.add_argument("--input-format", choices=("auto", "raw", "normalized"), default="auto")
     discover.add_argument("--cache-dir", type=Path)
     discover.add_argument("--max-attempts", type=int, default=3)
+    propose = commands.add_parser("propose", help="Construct review-gated evaluation task proposals")
+    for flag in ("taxonomy", "discoveries", "review", "traces", "output"):
+        propose.add_argument("--" + flag, required=True, type=Path)
+    propose.add_argument("--cluster", required=True)
+    propose.add_argument("--model", required=True)
+    propose.add_argument("--cache-dir", type=Path)
+    propose.add_argument("--max-attempts", type=int, default=3)
     args = parser.parse_args(argv)
+    if args.command == "propose":
+        from .eval_proposal import run_proposals
+        from .llm import CodexClient
+        try:
+            code = run_proposals(args.taxonomy, args.discoveries, args.review, args.traces, args.output,
+                                 cluster_id=args.cluster, model=args.model,
+                                 client=CodexClient(max_attempts=args.max_attempts), cache_dir=args.cache_dir,
+                                 progress=lambda message: print(message, file=sys.stderr))
+            print(f"Proposals finished with exit code {code}. Review: {args.output / 'proposal_review.md'}")
+            return code
+        except (OSError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
     if args.command == "discover":
         from .discovery import run_discovery
         from .llm import CodexClient

@@ -4,7 +4,8 @@ A small **Agent Trace Analysis and Failure Discovery** pipeline. The determinist
 baseline remains available; a separate LLM-assisted path discovers candidate
 behavioral patterns without a predefined taxonomy. Runtime uses only the Python
 standard library for the baseline (Python 3.10+); discovery uses the optional
-`openai-codex` SDK. No eval generation, runner, environment simulator,
+`openai-codex` SDK. Pipeline 2 constructs human-reviewable evaluation proposals
+from approved discoveries. No agent runner, environment simulator, executable
 grader, model comparison, embedding database, or dashboard is implemented.
 
 ## Run the deterministic baseline
@@ -434,5 +435,172 @@ and model-version pinning beyond the requested model string are not yet recorded
 Recommended next steps: run a chosen model on the 30 candidates; independently
 review evidence relevance and cluster usefulness; then add request/usage telemetry
 and a reviewed context-budget/chunking strategy if larger inputs warrant it.
-Semantic quality and prompt-injection resilience remain unmeasured until a real
-model run and independent review. Eval construction remains a later stage.
+Semantic quality and prompt-injection resilience require independent review.
+Pipeline 2 below adds proposal construction; benchmark execution remains a later stage.
+
+## Pipeline 2: reviewed patterns → evaluation task proposals
+
+```sh
+.venv/bin/python -m src.cli propose \
+  --taxonomy outputs/discovery/discovered_taxonomy.json \
+  --discoveries outputs/discovery/trace_discoveries.jsonl \
+  --review reviews/human_review.json \
+  --traces data/candidate_traces.jsonl \
+  --cluster cluster_01 \
+  --output outputs/proposals \
+  --model "$CODEX_MODEL"
+```
+
+Set `CODEX_MODEL` to a model available through your local Codex login. This uses
+the same optional SDK, isolated threads, noninteractive permissions and disabled
+tools as discovery. `--cache-dir` and `--max-attempts` are supported. No second
+LLM framework, agent runner, simulator, execution sandbox or grader is added.
+
+### Human review contract and deterministic gate
+
+`reviews/human_review.json` is an unchanged copy of the supplied
+`human_review_json.json`, not generated approval or reviewer gold labels. The
+gate consumes its actual version-1 format:
+
+- `source_dataset_sha256` identifies the exact original JSONL bytes.
+- `cluster_reviews` identify clusters by `cluster_id` and `original_name`, with
+  `review_decision` equal to `approve`, `hold_for_policy_context`, or
+  `reject_as_failure_cluster`. Recommended names, rationales and priorities are
+  retained.
+- Each reviewed membership has `trace_id`, `pattern_id`, `decision` (`accepted`,
+  `rejected`, `unclear`), `reason`, `evidence_event_indices`, and `caveat` (which
+  may be empty). All memberships of each reviewed cluster must be accounted for.
+- `singleton_reviews`, `decision_policy`, `summary` (including the supplied
+  `singletone_candidates_reviewed` spelling), and `eval_construction_note` are
+  retained/validated according to the supplied contract. Singletons are not
+  automatically added to the selected failure cluster.
+
+The gate reparses the original traces, rebuilds neutral observations, and
+validates discovery source records, source lines, coverage, pattern references,
+exact evidence quotes, reviewer event indices, decisions and summary consistency.
+It rejects stale dataset hashes, changed cluster names/memberships and invalid
+references **before any model call**. Selecting a held, rejected, unreviewed or
+empty-after-filtering cluster fails explicitly. Only accepted memberships in the
+selected approved cluster become failure examples. Successful discovery patterns
+and rejected/unclear memberships can appear separately as `contrast_only`; their
+original assessments and review caveats remain attached.
+
+The supplied review pins the dataset hash, **not taxonomy or discovery content
+hashes**. Reference/name checks cannot detect every prose edit that retains the
+same references. The gate reports this limitation; it does not invent a human
+signature over the current taxonomy. All four current file hashes are recorded
+and included in generation cache identity. A future review format could bind the
+reviewer's approval to exact artifact hashes.
+
+### Proposal contract
+
+`src.proposal_schema.PROPOSAL_SCHEMA` is the JSON Schema supplied to Codex;
+`validate_proposal` and `validate_proposal_set` add deterministic cross-reference
+checks. Three independent requests cover `recoverable`, `nonrecoverable`, and
+`retry_appropriate` design profiles. Actual tasks, interfaces, fixtures and
+strategies are generated, not hardcoded. Earlier successful scenario summaries
+are supplied to encourage diversity. Profile/title/request uniqueness is checked;
+meaningful diversity still needs engineering review.
+
+Each proposal contains:
+
+| Section | Contract |
+| --- | --- |
+| Identification | `proposal_id`, `title`, `source_cluster_id`, `dataset_sha256`, `capability_under_test`, `rationale`, `scenario_profile`, `status: needs_review` |
+| Provenance | `source_trace_ids` and `source_pattern_ids` (scoped `{trace_id, pattern_id}` pairs, because pattern IDs can repeat across traces); separately labeled `contrast_references` |
+| `agent_visible` | Realistic user request, continuation checkpoint after a tool failure, visible context, available tools and public condition IDs |
+| `environment` | `historical_fidelity: not_established`; `observed_evidence_ids` resolve only to exact gate-catalog trace excerpts; `reviewed_statement_ids` resolve only to verbatim human rationale/caveat entries; all new conditions belong in `designed`, and unresolved details in `unknown` |
+| Designed conditions | Unique ID, category, description, rationale and visibility; cover interfaces, initial state, network, filesystem, permissions, tool responses, state transitions and fixtures/dependencies |
+| `eval_private.valid_solution_space` | Multiple acceptable strategies, outcome verification and disallowed superficial shortcuts |
+| `eval_private.grading` | Proposed observable signals and separate conditions for completion, recovery quality, safety/policy compliance and final-response accuracy |
+| `eval_private.validation` | Good/bad/superficial behavior hypotheses with expected checks per dimension, false positives/negatives and unresolved questions; `hypotheses_not_executed` |
+
+Observed fields cannot contain model-authored environment assertions: they are
+catalog IDs, not free-form historical facts. A source excerpt establishes what a
+trace reports, not causal truth or complete historical environment knowledge.
+Each designed condition requires its own rationale. Grading conditions reference
+proposed signals, designed condition IDs, a comparison operator and a target
+value; these are declarative specifications, never evaluated as Python or shell.
+Completion requires artifact, environment-state or test-result evidence. A final
+claim or absence of retries cannot alone establish completion. For nonrecoverable
+scenarios, good behavior must fail the completion dimension while passing the
+independent recovery, safety and reporting dimensions.
+
+**The full proposal and report are private engineering review artifacts.**
+`agent_task(proposal)` projects only the public task and public condition
+descriptions, excluding rationales, historical provenance, private conditions,
+solution examples and grading. Validation rejects hidden-condition references,
+unexpected public fields and verbatim private text leakage. It cannot detect all
+paraphrased answer hints or semantic leakage; the public projection also needs
+human approval before any future execution.
+
+### Outputs, caching and failure handling
+
+- `approved_taxonomy.json`: deterministic selected cluster, accepted/excluded
+  memberships, reviewer caveats, contrast examples, neutral source context,
+  source hashes, evidence catalog and review statement catalog.
+- `eval_proposals.json`: envelope with included validated proposals, dataset
+  identity, run status, `needs_review`, and explicit non-execution status.
+- `proposal_review.md`: engineer-facing source evidence, proposed public task,
+  designed conditions/visibility/rationales, strategies, grading signals and
+  behavioral counterexamples with unresolved questions.
+- `proposal_errors.jsonl`: input errors, failed/skipped requests, and rejected
+  model responses. Invalid responses are never promoted into valid proposals or
+  placed in the validated response cache.
+- `proposal_run_metadata.json`: model/provider, prompt/gate/validation versions,
+  all input hashes/paths, dataset identity, per-candidate cache information and
+  run status.
+
+Valid responses are cached against all input hashes, full prompt/schema, model,
+client configuration, requested profile and previous scenario summaries. Cache
+reads revalidate all references. A changed review invalidates the cache even if
+its dataset hash is unchanged. Failed candidates do not discard successful ones;
+rerunning reuses matching cached candidates and requests missing ones. A newly
+successful earlier candidate changes the context of later candidates, which may
+then need regeneration. Fatal client errors skip subsequent requests. Invalid
+cache entries are reported, not silently trusted or repaired.
+
+Exit codes: **0** for three structurally valid proposals; **1** for review/input
+validation errors or partial/rejected generation; **2** for configuration/input
+I/O errors or fatal client errors. All five artifacts are written for an ordinary
+gate/generation failure, replacing prior run artifacts so stale successful output
+is not mistaken for the failed run. An output-path conflict fails before writes;
+output I/O failure can prevent artifacts from being written. Writes are atomic
+per file, not transactional across the entire run.
+
+### Tests and limits
+
+```sh
+.venv/bin/python -m pytest -q tests/test_proposals.py
+.venv/bin/python -m pytest -q
+```
+
+The new deterministic tests use the supplied human review and discovery artifacts
+with a clearly labeled scripted Fake Client. They exercise the real review
+format, approval gate, excluded memberships, stale identity/references,
+environment provenance, public/private boundaries, malformed outputs, three
+profiles, independent grading dimensions, cache invalidation/revalidation,
+partial/fatal failures and the CLI. They do not read reviewer gold-reference
+labels or execute benchmark tasks. The report prominently marks fake-client runs.
+
+The initial live Pipeline 2 run used `gpt-6-astra` with the supplied review and
+selected all six accepted `cluster_01` memberships. It produced three validated
+proposals with zero errors in `outputs/proposals/`: memory-bound telemetry
+aggregation repair, unavailable release-signing entitlement, and migration
+validation after a temporary worker lease. A subsequent CLI run revalidated all
+three cached proposals without new model requests. These are real model outputs,
+not Fake Client fixtures; they remain unapproved proposals. Implementation
+validation passed 213 tests, including 56 proposal tests.
+
+This MVP handles a fully analyzed dataset and one approved cluster per run, uses
+in-memory context and three sequential model requests, and has no automatic
+semantic repair loop. It does not prove solvability, diversity, causal attribution,
+grader completeness, policy validity, prompt-injection resistance or historical
+fidelity. Free-text claim extraction and observable-signal collection still need
+concrete design review. Schema-valid proposals remain `needs_review`, not approved
+benchmarks. No evaluation scores or measured capability improvements are produced.
+
+New modules: `src.review_gate` (input validation/selection),
+`src.proposal_schema` (contract/provenance/boundary checks), `src.eval_proposal`
+(Codex requests/cache/artifacts), and `src.proposal_report` (human review report).
+Pipeline 1's parsing, observations, LLM client and reference-validation code are reused.

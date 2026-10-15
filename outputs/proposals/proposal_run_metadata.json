@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "provider": "openai_codex",
+  "model": "gpt-6-astra",
+  "client_config": {
+    "provider": "openai_codex",
+    "sdk_version": "0.162.1",
+    "adapter_version": "codex-v1",
+    "sandbox": "read_only",
+    "output_mode": "output_schema",
+    "config_overrides": [
+      "features.shell_tool=false",
+      "features.apps=false",
+      "features.multi_agent=false",
+      "web_search=\"disabled\"",
+      "mcp_servers={}"
+    ]
+  },
+  "prompt_version": "eval-proposal-v1",
+  "validation_version": "proposal-references-v1",
+  "gate_version": "human-review-v1",
+  "input_paths": {
+    "taxonomy": "outputs/discovery/discovered_taxonomy.json",
+    "discoveries": "outputs/discovery/trace_discoveries.jsonl",
+    "review": "reviews/human_review.json",
+    "traces": "data/candidate_traces.jsonl"
+  },
+  "input_source_hashes": {
+    "taxonomy": "a7b73826a146604b3fa8e26ef1d89388d1f4b63861b569e4c001fdc58461a073",
+    "discoveries": "2ca350cb59f578ac8f9e1fb52a4cee6118707b5a2ce969cb41828aa7571cf7c1",
+    "review": "32e369e50bde227351387bd5687a75958f5d6977571721002179218e9b965478",
+    "traces": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66"
+  },
+  "dataset_sha256": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66",
+  "selected_cluster_id": "cluster_01",
+  "requested_proposal_count": 3,
+  "semantic_validation": "human_review_required",
+  "execution_status": "not_executed",
+  "status": "completed",
+  "generated_proposal_count": 3,
+  "error_count": 0,
+  "cache": [
+    {
+      "proposal_id": "cluster_01_proposal_01",
+      "key": "93b3d2687d82fe2f49cc20789a65946bd082bae0aa6fc73cb9391ca3e7fed866",
+      "hit": true,
+      "accepted": true
+    },
+    {
+      "proposal_id": "cluster_01_proposal_02",
+      "key": "40bf6819bf80f2a5f322cc0c43044c23de0ea11cf168712ecfd7a44ce629f6b4",
+      "hit": true,
+      "accepted": true
+    },
+    {
+      "proposal_id": "cluster_01_proposal_03",
+      "key": "4c37d5602d112e43a07bcb55e281e650e1eba9e06bd66c0c51f4d3c0346804ab",
+      "hit": true,
+      "accepted": true
+    }
+  ],
+  "cache_hits": 3
+}
