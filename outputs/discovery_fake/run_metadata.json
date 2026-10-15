@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "provider": "fake_scripted",
+  "model": "FAKE-INTEGRATION-NOT-A-MODEL",
+  "client_config": {
+    "provider": "fake_scripted",
+    "fixture_version": 1
+  },
+  "prompt_versions": {
+    "trace": "trace-discovery-v1",
+    "taxonomy": "taxonomy-discovery-v1"
+  },
+  "validation_version": "references-v1",
+  "input_path": "data/candidate_traces.jsonl",
+  "dataset_sha256": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66",
+  "input_format": "auto",
+  "valid_input_count": 30,
+  "analyzed_trace_count": 30,
+  "cache_hits": {
+    "trace": 0,
+    "taxonomy": 0
+  },
+  "status": "completed",
+  "semantic_validation": "human_review_required",
+  "determinism": "Parsing and validation deterministic; uncached LLM generations may vary.",
+  "error_count": 0,
+  "taxonomy_status": "completed"
+}

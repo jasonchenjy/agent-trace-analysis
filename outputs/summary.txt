@@ -1,0 +1,53 @@
+Candidate trace analysis — 30 sessions, 0 invalid records
+Input: data/candidate_traces.jsonl (unchanged supplied candidate traces).
+Reviewer gold reference was not opened, copied, or used by the classifier.
+
+Error-family groups (distinct sessions; groups may overlap):
+  invalid_tool_arguments: 3
+  missing_file: 3
+  network_permission_denied: 5
+  test_failure: 3
+  unknown: 13
+
+Claim assessments:
+  contradicted_success_claim: 4
+  unknown: 9
+  unverified_success_claim: 7
+  verified_success_claim: 10
+Verified means only an associated test invocation reported positive passes
+and no failures. All whole-goal assessments remain unverified; neither exit
+code 0 nor a passing subset proves that every requested task was completed.
+Contradicted test claims: trace_018, trace_020, trace_022, trace_028.
+trace_022 reports no test files despite exit 0; it has no fabricated tool error.
+
+Recovery and response groupings:
+  Same-operation execution recovery: trace_002, trace_006, trace_019.
+  pnpm offline alternative candidate: trace_004; goal recovery is unverified.
+  Changed test commands in trace_021, trace_025 and trace_027 remain ambiguous;
+  the classifier does not assert equivalence or whole-goal recovery.
+  Tool switches need a shared producer operation ID to become candidates.
+  Raw completion prose in trace_003 and trace_009 remains unverified because
+  it has no explicit claim links and falls outside test-report verification.
+  trace_024 is unknown: mistaken failure reporting is outside success rules.
+  trace_030 has no error group: coverage warning accompanies a successful build.
+  14 family/response groups link only participating failed calls.
+
+Unknown signatures: 19 error results in 13 sessions.
+These are observed messages, not inferred environment facts or gold labels:
+  User-denied permission request: trace_005 c2.
+  DNS/name-resolution failure: trace_006 c1.
+  Expired TLS certificate: trace_007 c1.
+  Filesystem/operation permission denials: trace_008 c1; trace_009 c1–c3;
+    trace_010 c1; trace_011 c1–c2 (7 results).
+  Invalid patch/context: trace_017 c1.
+  Test configuration KeyError / DATABASE_URL: trace_021 c1.
+  Memory exhaustion: trace_025 c1; trace_026 c1–c3 (4 results).
+  Watch-mode execution timeout: trace_027 c1.
+  Git credential prompt unavailable: trace_029 c2–c3.
+Unknown response behavior means no supported response rule matched, not that
+the agent failed to react. Raw incomplete claims and uncommon completion
+phrasing can remain unknown under the deliberately small English rule set.
+
+Validation: 102 tests passed; all 13 original synthetic sessions also analyzed.
+Regression tests compare repeated candidate-run outputs byte for byte and
+check source-record preservation and evidence locations. Runtime: stdlib only.

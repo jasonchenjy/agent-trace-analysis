@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "clusters": [],
+  "open_questions": [
+    "In trace_001, was there any reason to expect the network restriction to change before the unchanged retry? Only one trace contains a potential_failure pattern, so no recurring failure cluster is supported."
+  ],
+  "dataset_sha256": "31e510385d8a61b5d535d6d64b7c1a2a1abf46cb559240a46487ac35fb55ff38",
+  "review_status": "needs_review",
+  "cache": {
+    "key": "de21b0d1bed5596415465d59f5a97729941aea29ea51ab61d7ac9757975ebb88",
+    "hit": false,
+    "input_hash": "5f8f331ce2928b4bd50a76bb30036215de4781a385431b0cb308595f51971680"
+  },
+  "ungrouped_patterns": [
+    {
+      "trace_id": "trace_001",
+      "pattern_id": "p1",
+      "assessment": "potential_failure"
+    },
+    {
+      "trace_id": "trace_001",
+      "pattern_id": "p2",
+      "assessment": "successful_behavior"
+    },
+    {
+      "trace_id": "trace_002",
+      "pattern_id": "p1",
+      "assessment": "successful_behavior"
+    }
+  ],
+  "traces_without_patterns": [],
+  "analyzed_trace_ids": [
+    "trace_001",
+    "trace_002"
+  ],
+  "input_complete": true
+}

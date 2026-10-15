@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "provider": "openai_codex",
+  "model": "gpt-6-astra",
+  "client_config": {
+    "provider": "openai_codex",
+    "sdk_version": "0.162.1",
+    "adapter_version": "codex-v1",
+    "sandbox": "read_only",
+    "output_mode": "output_schema",
+    "config_overrides": [
+      "features.shell_tool=false",
+      "features.apps=false",
+      "features.multi_agent=false",
+      "web_search=\"disabled\"",
+      "mcp_servers={}"
+    ]
+  },
+  "prompt_versions": {
+    "trace": "trace-discovery-v1",
+    "taxonomy": "taxonomy-discovery-v1"
+  },
+  "validation_version": "references-v1",
+  "input_path": "/Users/junyuc/Documents/interview/agent_trace_eval_data/agent_trace_candidate_inputs/data/traces.jsonl",
+  "dataset_sha256": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66",
+  "input_format": "auto",
+  "valid_input_count": 30,
+  "analyzed_trace_count": 30,
+  "cache_hits": {
+    "trace": 2,
+    "taxonomy": 0
+  },
+  "status": "completed",
+  "semantic_validation": "human_review_required",
+  "determinism": "Parsing and validation deterministic; uncached LLM generations may vary.",
+  "error_count": 0,
+  "taxonomy_status": "completed"
+}

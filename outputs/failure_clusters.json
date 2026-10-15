@@ -1,0 +1,1032 @@
+{
+  "schema_version": 2,
+  "analyzed_trace_count": 30,
+  "groups": {
+    "error_families": [
+      {
+        "label": "invalid_tool_arguments",
+        "trace_count": 3,
+        "members": [
+          {
+            "trace_id": "trace_015",
+            "source_line": 15,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_016",
+            "source_line": 16,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_018",
+            "source_line": 18,
+            "event_indices": [
+              0,
+              1,
+              2,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "label": "missing_file",
+        "trace_count": 3,
+        "members": [
+          {
+            "trace_id": "trace_012",
+            "source_line": 12,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_013",
+            "source_line": 13,
+            "event_indices": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "trace_id": "trace_014",
+            "source_line": 14,
+            "event_indices": [
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "label": "network_permission_denied",
+        "trace_count": 5,
+        "members": [
+          {
+            "trace_id": "trace_001",
+            "source_line": 1,
+            "event_indices": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          {
+            "trace_id": "trace_002",
+            "source_line": 2,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_003",
+            "source_line": 3,
+            "event_indices": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "trace_id": "trace_004",
+            "source_line": 4,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_005",
+            "source_line": 5,
+            "event_indices": [
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "label": "test_failure",
+        "trace_count": 3,
+        "members": [
+          {
+            "trace_id": "trace_019",
+            "source_line": 19,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_020",
+            "source_line": 20,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_028",
+            "source_line": 28,
+            "event_indices": [
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "label": "unknown",
+        "trace_count": 13,
+        "members": [
+          {
+            "trace_id": "trace_005",
+            "source_line": 5,
+            "event_indices": [
+              2,
+              3
+            ]
+          },
+          {
+            "trace_id": "trace_006",
+            "source_line": 6,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_007",
+            "source_line": 7,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_008",
+            "source_line": 8,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_009",
+            "source_line": 9,
+            "event_indices": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "trace_id": "trace_010",
+            "source_line": 10,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_011",
+            "source_line": 11,
+            "event_indices": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "trace_id": "trace_017",
+            "source_line": 17,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_021",
+            "source_line": 21,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_025",
+            "source_line": 25,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_026",
+            "source_line": 26,
+            "event_indices": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "trace_id": "trace_027",
+            "source_line": 27,
+            "event_indices": [
+              0,
+              1
+            ]
+          },
+          {
+            "trace_id": "trace_029",
+            "source_line": 29,
+            "event_indices": [
+              2,
+              3,
+              4,
+              5
+            ]
+          }
+        ]
+      }
+    ],
+    "behavior_patterns": [
+      {
+        "label": "repeated_failed_operation",
+        "trace_count": 5,
+        "members": [
+          {
+            "trace_id": "trace_001",
+            "source_line": 1,
+            "event_indices": [
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "trace_id": "trace_013",
+            "source_line": 13,
+            "event_indices": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "trace_id": "trace_018",
+            "source_line": 18,
+            "event_indices": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "trace_id": "trace_026",
+            "source_line": 26,
+            "event_indices": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "trace_id": "trace_029",
+            "source_line": 29,
+            "event_indices": [
+              2,
+              3,
+              4,
+              5
+            ]
+          }
+        ]
+      },
+      {
+        "label": "successful_recovery",
+        "trace_count": 3,
+        "members": [
+          {
+            "trace_id": "trace_002",
+            "source_line": 2,
+            "event_indices": [
+              0,
+              1,
+              4,
+              5
+            ]
+          },
+          {
+            "trace_id": "trace_006",
+            "source_line": 6,
+            "event_indices": [
+              0,
+              1,
+              4,
+              5
+            ]
+          },
+          {
+            "trace_id": "trace_019",
+            "source_line": 19,
+            "event_indices": [
+              0,
+              1,
+              8,
+              9
+            ]
+          }
+        ]
+      },
+      {
+        "label": "unknown",
+        "trace_count": 19,
+        "members": [
+          {
+            "trace_id": "trace_003",
+            "source_line": 3,
+            "event_indices": [
+              6
+            ]
+          },
+          {
+            "trace_id": "trace_004",
+            "source_line": 4,
+            "event_indices": [
+              8
+            ]
+          },
+          {
+            "trace_id": "trace_005",
+            "source_line": 5,
+            "event_indices": [
+              4
+            ]
+          },
+          {
+            "trace_id": "trace_007",
+            "source_line": 7,
+            "event_indices": [
+              8
+            ]
+          },
+          {
+            "trace_id": "trace_008",
+            "source_line": 8,
+            "event_indices": [
+              8
+            ]
+          },
+          {
+            "trace_id": "trace_009",
+            "source_line": 9,
+            "event_indices": [
+              8
+            ]
+          },
+          {
+            "trace_id": "trace_010",
+            "source_line": 10,
+            "event_indices": [
+              8
+            ]
+          },
+          {
+            "trace_id": "trace_011",
+            "source_line": 11,
+            "event_indices": [
+              6
+            ]
+          },
+          {
+            "trace_id": "trace_012",
+            "source_line": 12,
+            "event_indices": [
+              10
+            ]
+          },
+          {
+            "trace_id": "trace_014",
+            "source_line": 14,
+            "event_indices": [
+              6
+            ]
+          },
+          {
+            "trace_id": "trace_015",
+            "source_line": 15,
+            "event_indices": [
+              6
+            ]
+          },
+          {
+            "trace_id": "trace_016",
+            "source_line": 16,
+            "event_indices": [
+              8
+            ]
+          },
+          {
+            "trace_id": "trace_017",
+            "source_line": 17,
+            "event_indices": [
+              8
+            ]
+          },
+          {
+            "trace_id": "trace_021",
+            "source_line": 21,
+            "event_indices": [
+              6
+            ]
+          },
+          {
+            "trace_id": "trace_023",
+            "source_line": 23,
+            "event_indices": [
+              6
+            ]
+          },
+          {
+            "trace_id": "trace_024",
+            "source_line": 24,
+            "event_indices": [
+              2
+            ]
+          },
+          {
+            "trace_id": "trace_025",
+            "source_line": 25,
+            "event_indices": [
+              6
+            ]
+          },
+          {
+            "trace_id": "trace_027",
+            "source_line": 27,
+            "event_indices": [
+              4
+            ]
+          },
+          {
+            "trace_id": "trace_030",
+            "source_line": 30,
+            "event_indices": [
+              4
+            ]
+          }
+        ]
+      },
+      {
+        "label": "unsupported_success_claim",
+        "trace_count": 4,
+        "members": [
+          {
+            "trace_id": "trace_018",
+            "source_line": 18,
+            "event_indices": [
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "trace_id": "trace_020",
+            "source_line": 20,
+            "event_indices": [
+              0,
+              1,
+              4
+            ]
+          },
+          {
+            "trace_id": "trace_022",
+            "source_line": 22,
+            "event_indices": [
+              0,
+              1,
+              4
+            ]
+          },
+          {
+            "trace_id": "trace_028",
+            "source_line": 28,
+            "event_indices": [
+              0,
+              1,
+              4
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "failure_patterns": [
+    {
+      "error_family": "invalid_tool_arguments",
+      "response_behavior": "repeated_failed_operation",
+      "trace_count": 1,
+      "members": [
+        {
+          "trace_id": "trace_018",
+          "source_line": 18,
+          "failed_call_ids": [
+            "c1",
+            "c2"
+          ],
+          "event_indices": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "invalid_tool_arguments",
+      "response_behavior": "unknown",
+      "trace_count": 2,
+      "members": [
+        {
+          "trace_id": "trace_015",
+          "source_line": 15,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_id": "trace_016",
+          "source_line": 16,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "invalid_tool_arguments",
+      "response_behavior": "unsupported_success_claim",
+      "trace_count": 1,
+      "members": [
+        {
+          "trace_id": "trace_018",
+          "source_line": 18,
+          "failed_call_ids": [
+            "c2"
+          ],
+          "event_indices": [
+            2,
+            3,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "missing_file",
+      "response_behavior": "repeated_failed_operation",
+      "trace_count": 1,
+      "members": [
+        {
+          "trace_id": "trace_013",
+          "source_line": 13,
+          "failed_call_ids": [
+            "c1",
+            "c2"
+          ],
+          "event_indices": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "missing_file",
+      "response_behavior": "unknown",
+      "trace_count": 3,
+      "members": [
+        {
+          "trace_id": "trace_012",
+          "source_line": 12,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_id": "trace_013",
+          "source_line": 13,
+          "failed_call_ids": [
+            "c3"
+          ],
+          "event_indices": [
+            4,
+            5
+          ]
+        },
+        {
+          "trace_id": "trace_014",
+          "source_line": 14,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "network_permission_denied",
+      "response_behavior": "alternative_recovery_candidate",
+      "trace_count": 1,
+      "members": [
+        {
+          "trace_id": "trace_004",
+          "source_line": 4,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1,
+            4,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "network_permission_denied",
+      "response_behavior": "repeated_failed_operation",
+      "trace_count": 1,
+      "members": [
+        {
+          "trace_id": "trace_001",
+          "source_line": 1,
+          "failed_call_ids": [
+            "c2",
+            "c3"
+          ],
+          "event_indices": [
+            2,
+            3,
+            4,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "network_permission_denied",
+      "response_behavior": "successful_recovery",
+      "trace_count": 1,
+      "members": [
+        {
+          "trace_id": "trace_002",
+          "source_line": 2,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1,
+            4,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "network_permission_denied",
+      "response_behavior": "unknown",
+      "trace_count": 3,
+      "members": [
+        {
+          "trace_id": "trace_001",
+          "source_line": 1,
+          "failed_call_ids": [
+            "c4"
+          ],
+          "event_indices": [
+            6,
+            7
+          ]
+        },
+        {
+          "trace_id": "trace_003",
+          "source_line": 3,
+          "failed_call_ids": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "event_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "trace_id": "trace_005",
+          "source_line": 5,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "test_failure",
+      "response_behavior": "successful_recovery",
+      "trace_count": 1,
+      "members": [
+        {
+          "trace_id": "trace_019",
+          "source_line": 19,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1,
+            8,
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "test_failure",
+      "response_behavior": "unsupported_success_claim",
+      "trace_count": 2,
+      "members": [
+        {
+          "trace_id": "trace_020",
+          "source_line": 20,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1,
+            4
+          ]
+        },
+        {
+          "trace_id": "trace_028",
+          "source_line": 28,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "unknown",
+      "response_behavior": "repeated_failed_operation",
+      "trace_count": 2,
+      "members": [
+        {
+          "trace_id": "trace_026",
+          "source_line": 26,
+          "failed_call_ids": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "event_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "trace_id": "trace_029",
+          "source_line": 29,
+          "failed_call_ids": [
+            "c2",
+            "c3"
+          ],
+          "event_indices": [
+            2,
+            3,
+            4,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "unknown",
+      "response_behavior": "successful_recovery",
+      "trace_count": 1,
+      "members": [
+        {
+          "trace_id": "trace_006",
+          "source_line": 6,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1,
+            4,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "error_family": "unknown",
+      "response_behavior": "unknown",
+      "trace_count": 10,
+      "members": [
+        {
+          "trace_id": "trace_005",
+          "source_line": 5,
+          "failed_call_ids": [
+            "c2"
+          ],
+          "event_indices": [
+            2,
+            3
+          ]
+        },
+        {
+          "trace_id": "trace_007",
+          "source_line": 7,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_id": "trace_008",
+          "source_line": 8,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_id": "trace_009",
+          "source_line": 9,
+          "failed_call_ids": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "event_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "trace_id": "trace_010",
+          "source_line": 10,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_id": "trace_011",
+          "source_line": 11,
+          "failed_call_ids": [
+            "c1",
+            "c2"
+          ],
+          "event_indices": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "trace_id": "trace_017",
+          "source_line": 17,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_id": "trace_021",
+          "source_line": 21,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_id": "trace_025",
+          "source_line": 25,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_id": "trace_027",
+          "source_line": 27,
+          "failed_call_ids": [
+            "c1"
+          ],
+          "event_indices": [
+            0,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "invalid_record_count": 0
+}
