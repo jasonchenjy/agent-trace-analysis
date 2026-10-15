@@ -115,7 +115,7 @@ def test_unlinked_error_does_not_contradict_success():
     record = copy.deepcopy(RECORDS["unsupported-success"])
     record["events"][-1].pop("evidence_call_ids")
     result = classify(analyze_trace(parse_trace(record)))
-    assert result["outcome"] == "unknown"
+    assert result["outcome"] == "unverified_success_claim"
     assert "unsupported_success_claim" not in result["behavior_patterns"]
 
 
@@ -130,7 +130,7 @@ def test_unknown_result_is_not_failure_or_success():
     record["events"][1]["status"] = "unknown"
     observed = analyze_trace(parse_trace(record))
     assert observed["tool_errors"] == []
-    assert classify(observed)["outcome"] == "unknown"
+    assert classify(observed)["outcome"] == "unverified_success_claim"
 
 
 def test_pending_calls_are_preserved():

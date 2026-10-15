@@ -15,6 +15,7 @@ class Trace:
     trace_id: str
     user_request: str
     events: tuple[dict[str, Any], ...]
+    source_record: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -159,7 +160,7 @@ def _invalid_constant(value: str) -> None:
     raise ValidationError(f"JSON: non-finite number {value}")
 
 
-def read_jsonl(path: str | Path) -> Iterator[ReadResult]:
+def read_jsonl(path: str | Path, input_format: str = "auto") -> Iterator[ReadResult]:
     """Yield valid traces or line errors. Blank lines are malformed records too."""
     seen: set[str] = set()
     with Path(path).open("rb") as stream:
@@ -170,7 +171,10 @@ def read_jsonl(path: str | Path) -> Iterator[ReadResult]:
                                     parse_constant=_invalid_constant)
                 if isinstance(record, dict) and isinstance(record.get("trace_id"), str):
                     trace_id = record["trace_id"]
-                trace = parse_trace(record)
+                # Keep the normalized validator strict; raw extensions are retained
+                # separately, never promoted to classifier facts.
+                from .adapter import parse_input
+                trace = parse_input(record, input_format)
                 if trace.trace_id in seen:
                     _fail("trace_id", f"duplicate trace_id {trace.trace_id!r}")
                 seen.add(trace.trace_id)

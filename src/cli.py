@@ -12,11 +12,12 @@ from .schema import read_jsonl
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Analyze normalized agent traces deterministically.")
+    parser = argparse.ArgumentParser(description="Analyze raw or normalized agent traces deterministically.")
     commands = parser.add_subparsers(dest="command", required=True)
     analyze = commands.add_parser("analyze")
     analyze.add_argument("--input", required=True, type=Path)
     analyze.add_argument("--output", required=True, type=Path)
+    analyze.add_argument("--input-format", choices=("auto", "raw", "normalized"), default="auto")
     args = parser.parse_args(argv)
     analyses = []
     errors = []
@@ -25,7 +26,7 @@ def main(argv: list[str] | None = None) -> int:
                         ("trace_analysis.jsonl", "failure_clusters.json", "validation_errors.jsonl")]
         if args.input.resolve() in {path.resolve() for path in destinations}:
             raise ValueError("input must not be an output file")
-        for item in read_jsonl(args.input):
+        for item in read_jsonl(args.input, args.input_format):
             if item.error is not None:
                 errors.append(item.error)
                 print(f"{args.input}:{item.line_number}: {item.error['message']}", file=sys.stderr)
@@ -34,8 +35,10 @@ def main(argv: list[str] | None = None) -> int:
             assert trace is not None
             observations = analyze_trace(trace)
             analyses.append({
-                "schema_version": 1, "trace_id": trace.trace_id,
+                "schema_version": 2, "trace_id": trace.trace_id,
                 "user_request": trace.user_request, "source_line": item.line_number,
+                "source_format": "raw" if trace.source_record is not None else "normalized",
+                **({"source_record": trace.source_record} if trace.source_record is not None else {}),
                 "observations": observations, "classification": classify(observations),
             })
         args.output.mkdir(parents=True, exist_ok=True)

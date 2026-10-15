@@ -5,6 +5,8 @@ import json
 import re
 from typing import Any
 
+from .claims import assess_success_claim
+from .recovery import goal_recovery_candidates
 from .schema import Trace
 
 
@@ -12,11 +14,11 @@ def error_families(output: str) -> list[str]:
     """Conservative message signatures, applied only to explicit error results."""
     text = output.lower()
     families = []
-    denied = re.search(r"permission denied|operation not permitted|access denied|\bblocked\b", text)
+    denied = re.search(r"permission denied|operation not permitted|access denied|\bblocked\b|denied by (?:policy|sandbox)|policy denied|\b(?:eperm|eacces)\b", text)
     network = re.search(r"\bnetwork\b|\bsocket\b|\bconnect\b|\bconnection\b|\begress\b|https?://", text)
     if denied and network:
         families.append("network_permission_denied")
-    if re.search(r"invalid (?:tool )?arguments?\b|unexpected keyword argument|missing required argument|argument validation failed", text):
+    if re.search(r"invalid (?:tool )?arguments?\b|unexpected keyword argument|missing required argument|argument validation failed|a value is required for|argument .*invalid .*value|unrecognized arguments?", text):
         families.append("invalid_tool_arguments")
     if re.search(r"no such file or directory|file not found|filenotfounderror", text):
         families.append("missing_file")
@@ -87,6 +89,7 @@ def analyze_trace(trace: Trace) -> dict[str, Any]:
                          if a["result_event_index"] < success["call_event_index"]]
             if recovered:
                 recoveries.append({
+                    "scope": "same_operation_execution",
                     "operation": success["operation"],
                     "failed_call_ids": [a["call_id"] for a in recovered],
                     "successful_call_id": success["call_id"],
@@ -105,12 +108,19 @@ def analyze_trace(trace: Trace) -> dict[str, Any]:
         "referenced_results": references,
         "event_indices": sorted(set(_indices(references) + ([final["event_index"]] if final else []))),
     }
+    claim_assessment = assess_success_claim(trace, calls, results, final)
     return {
         "attempts": attempts, "tool_errors": errors,
         "repeated_exact_failed_commands": repeated_commands,
         "repeated_failed_operations": repeated_operations,
         "recoveries": recoveries,
+        "goal_recovery": {
+            "status": "unverified",
+            "reason": "Same-operation execution recovery does not verify the user's goal.",
+            "candidates": goal_recovery_candidates(attempts, calls),
+        },
         "unresolved_failed_call_ids": [a["call_id"] for a in unresolved],
         "pending_calls": [a for a in attempts if a["status"] == "pending"],
         "final_outcome_evidence": final_evidence,
+        "success_claim_assessment": claim_assessment,
     }
