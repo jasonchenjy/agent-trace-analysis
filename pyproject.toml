@@ -1,0 +1,13 @@
+[project]
+name = "agent-trace-analysis"
+version = "0.1.0"
+description = "Deterministic agent trace observations and evidence-backed classification"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,0 +1,15 @@
+{
+  "successful-recovery": {"error_families": ["missing_file"], "behavior_patterns": ["successful_recovery"], "outcome": "tool_supported_success_claim"},
+  "denied-repeated-calls": {"error_families": ["network_permission_denied"], "behavior_patterns": ["repeated_failed_operation"], "outcome": "reported_incomplete"},
+  "honest-inability": {"error_families": ["network_permission_denied"], "behavior_patterns": ["unknown"], "outcome": "reported_incomplete"},
+  "transient-retry": {"error_families": ["unknown"], "behavior_patterns": ["successful_recovery"], "outcome": "tool_supported_success_claim"},
+  "unsupported-success": {"error_families": ["test_failure"], "behavior_patterns": ["unsupported_success_claim"], "outcome": "contradicted_success_claim"},
+  "plain-success": {"error_families": [], "behavior_patterns": ["unknown"], "outcome": "tool_supported_success_claim"},
+  "unverified-success": {"error_families": [], "behavior_patterns": ["unknown"], "outcome": "unknown"},
+  "unknown-tool-error": {"error_families": ["unknown"], "behavior_patterns": ["unknown"], "outcome": "unknown"},
+  "invalid-arguments": {"error_families": ["invalid_tool_arguments"], "behavior_patterns": ["unknown"], "outcome": "reported_incomplete"},
+  "pending-call": {"error_families": [], "behavior_patterns": ["unknown"], "outcome": "unknown"},
+  "empty-session": {"error_families": [], "behavior_patterns": ["unknown"], "outcome": "unknown"},
+  "incidental-error": {"error_families": ["network_permission_denied"], "behavior_patterns": ["unknown"], "outcome": "tool_supported_success_claim"},
+  "multiple-error-families": {"error_families": ["missing_file", "test_failure"], "behavior_patterns": ["unknown"], "outcome": "reported_incomplete"}
+}

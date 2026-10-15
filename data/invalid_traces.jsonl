@@ -1,0 +1,6 @@
+{"user_request":"Missing trace ID","events":[]}
+{"trace_id":"missing-events","user_request":"Missing events"}
+{"trace_id":"orphan-result","user_request":"Malformed session","events":[{"event_index":2,"type":"tool_result","call_id":"absent","status":"error","output":"Unknown"}]}
+{"trace_id":"invalid-status","user_request":"Malformed status","events":[{"event_index":0,"type":"tool_call","call_id":"a","tool":"shell","arguments":{}},{"event_index":1,"type":"tool_result","call_id":"a","status":"failed","output":"Failed"}]}
+{"trace_id":"broken-json",
+null
