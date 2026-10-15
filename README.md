@@ -1,10 +1,13 @@
 # Agent trace analysis
 
-A small, deterministic implementation of **Trace Analysis** and **Failure
-Classification / Grouping**. Runtime uses only the Python standard library
-(Python 3.10+). There is no task generation, eval runner, grader, or LLM integration.
+A small **Agent Trace Analysis and Failure Discovery** pipeline. The deterministic
+baseline remains available; a separate LLM-assisted path discovers candidate
+behavioral patterns without a predefined taxonomy. Runtime uses only the Python
+standard library for the baseline (Python 3.10+); discovery uses the optional
+`openai-codex` SDK. No eval generation, runner, environment simulator,
+grader, model comparison, embedding database, or dashboard is implemented.
 
-## Run
+## Run the deterministic baseline
 
 ```sh
 python -m src.cli analyze --input data/candidate_traces.jsonl --output outputs/
@@ -113,7 +116,7 @@ rejected. Tool arguments remain tool-specific JSON: e.g. an invalid `path: 7`
 is a valid trace of an invalid tool invocation. The analyzer does not validate
 external tools' schemas.
 
-## Observations and classification rules
+## Baseline observations and classification rules
 
 Every completed error result records the original output, optional exit code,
 call ID, and call/result event indices. Message signatures assign one or more
@@ -182,7 +185,7 @@ an associated claim that tests ran and passed. It does not become a fabricated
 tool error. Error signatures still apply only to explicit execution errors.
 This keeps incidental warning text in a successful build out of error groups.
 
-## Outputs and interfaces
+## Baseline outputs and interfaces
 
 - `trace_analysis.jsonl`: one record per valid session, including `schema_version`,
   trace ID, user request, source line, source format (and original raw record),
@@ -222,7 +225,7 @@ for identical input and input path, with no timestamps or generated metadata.
 Library callers receive `ValidationError` for invalid records. `read_jsonl`
 instead returns per-line errors so batch processing can continue.
 
-## Limitations
+## Baseline limitations
 
 The signatures are English-centric heuristics, not root-cause analysis. Quoted
 error text inside an error response can match; paraphrases may be missed.
@@ -237,3 +240,199 @@ Only the supplied raw schema and the normalized contract are supported. No envir
 permission scope, tool availability, or capability metadata is invented.
 The CLI holds analyses in memory for clustering and writes files non-atomically;
 large-scale streaming/storage and transactional output handling are future work.
+
+## Discovery: neutral evidence → per-trace analysis → candidate taxonomy
+
+```text
+read_jsonl / raw adapter (existing)
+  → extract_observations (no baseline labels)
+  → per-trace LLM analysis
+  → schema + source evidence validation
+  → cross-trace LLM grouping
+  → schema + membership + source evidence validation
+  → candidate taxonomy and human review
+```
+
+The baseline analyzer/classifier is unchanged and is not called by discovery.
+`src.observations` exposes user requests, original event indices and call IDs,
+tool arguments, statuses, exit codes, outputs, separate raw stdout/stderr, final
+text, exact repeated calls, argument differences between consecutive calls to the
+same tool, and missing results/final responses. Consecutive calls are not assumed
+to address the same operation or goal. No error-family labels, baseline outcomes,
+producer outcome annotations, or reviewer metadata enter discovery prompts.
+
+The complete original record remains in the local per-session output for review;
+only allowlisted neutral fields enter the LLM request. Tool arguments and outputs
+are still untrusted source data. The two prompts contain no example failure
+categories or fixed pattern names. Trace text and first-pass analyses are sent as
+user-message data; thread base instructions prohibit following embedded
+instructions or assuming hidden environment facts. Each request uses a fresh,
+ephemeral Codex thread in an empty temporary working directory with
+`Sandbox.read_only` and `ApprovalMode.deny_all`. Configuration overrides disable
+shell execution, web search, apps, multi-agent use and configured MCP servers.
+The repository and reviewer files are not supplied as workspace context. Read-only
+mode restricts writes, not all filesystem reads; these controls and prompts are
+not a proof of resistance to every malicious trace instruction.
+
+### Real Codex SDK run
+
+Install the pinned optional dependency and sign in/configure Codex for the model
+you want to use. Authentication is handled by Codex; the adapter does not require
+or inspect `OPENAI_API_KEY`, and does not call the Responses HTTP endpoint.
+
+```sh
+.venv/bin/python -m pip install openai-codex==0.162.1
+# Complete Codex login/configuration in your local environment first.
+export CODEX_MODEL="YOUR_MODEL_NAME"
+.venv/bin/python -m src.cli discover \
+  --input data/candidate_traces.jsonl \
+  --output outputs/discovery/ \
+  --model "$CODEX_MODEL"
+```
+
+`pyproject.toml` also declares the SDK under the `discovery` extra. The baseline
+and fake-client tests do not require the SDK. The installed SDK API is checked
+by a signature compatibility test (skipped when the optional package is absent).
+
+The adapter follows the [Codex Python SDK](https://learn.chatgpt.com/docs/codex-sdk)
+workflow:
+
+```python
+from openai_codex import Codex, Sandbox
+
+with Codex() as codex:
+    thread = codex.thread_start(model=model, sandbox=Sandbox.read_only)
+    result = thread.run(prompt, output_schema=schema)
+    response_text = result.final_response
+```
+
+The implementation additionally sets an isolated working directory, ephemeral
+threads, noninteractive approval denial and analysis instructions. Model names
+are passed through from `--model`; no model is hardcoded. `output_schema` supplies
+the existing JSON contract, followed by the same Python evidence validation.
+Unsuccessful/interrupted turns, missing final responses, malformed JSON and invalid
+references are rejected. The adapter does not silently fall back to direct HTTP.
+
+`--max-attempts` defaults to 3 (maximum 5), with bounded exponential backoff for
+SDK overload, closed transport, connection and timeout exceptions. Every attempt
+creates and closes its own Codex context and thread. Other SDK/runtime errors
+stop subsequent requests and report an actionable installation/login/model-access
+error without copying raw runtime diagnostics. Failed turns are reported while
+other traces can continue. SDK/runtime internal retries are separate from this
+adapter budget.
+
+The former HTTP-only `--json-mode`, `--timeout`, and `--max-output-tokens` options
+were removed: this SDK's synchronous `thread.run()` has no equivalent parameters.
+There is currently no adapter-enforced wall-clock deadline; turn limits follow
+the Codex runtime. `--input-format` and `--cache-dir` remain available.
+
+### Analysis and evidence contract
+
+`src.discovery_schema` defines the API JSON schemas and validates them in Python.
+Per-trace results contain goal interpretation, execution summary, proposed observed
+facts, obstacle, agent response, outcome reasoning, missing information and freely
+named candidate patterns. Broad assessments are `potential_failure`,
+`successful_behavior`, and `unclear`; outcomes are `achieved`, `not_achieved`, or
+`unknown`. These statuses do not enumerate failure categories. A tool error is
+not automatically an agent failure, and exit 0 is not task-ground-truth evidence.
+
+Every pattern and proposed observed fact needs evidence. Each evidence item has:
+
+```json
+{"event_index": 3, "call_id": "c2", "field": "/output", "quote": "exact source excerpt"}
+```
+
+`field` is a JSON pointer into a neutral event; `quote` must be a nonempty exact
+substring of that scalar field, at most 300 characters. The event must exist in
+the specified session and its call ID must match (`null` for final events).
+Unknown indices, fabricated quotes, mismatched sessions/calls, missing fields,
+duplicate IDs, duplicate JSON keys and non-finite values are rejected. Missing
+evidence in summaries/obstacle/response/unknown outcome must be acknowledged in
+`unknowns`; achieved/not-achieved outcomes require evidence. User-goal text is
+an interpretation of the supplied request, not independent ground truth.
+
+The second pass receives validated per-trace results only. Each cluster defines
+a dynamic name, common behavior, candidate capability gap, members, representative
+example and uncertainties. Members reference existing `potential_failure` pattern
+IDs and reuse their validated evidence. Each recurring cluster needs at least two
+distinct sessions; singletons remain accessible as ungrouped findings. Multiple
+memberships are allowed. Successful/unclear patterns cannot be silently included
+in failure clusters. Every cluster is `needs_review`. An invalid taxonomy response
+is rejected as a unit, while valid per-trace discoveries are retained.
+
+**Reference validation is not semantic validation.** A real quotation can still
+be misinterpreted, omit counterevidence, or fail to support a capability-gap claim.
+All proposed facts, interpretations, outcomes and cluster boundaries need human
+review; there is no grader in this stage.
+
+### Discovery artifacts and cache
+
+| File | Contents |
+| --- | --- |
+| `trace_discoveries.jsonl` | Valid per-trace analyses, neutral observations, original records, source line, model/prompt identity, cache key and review status |
+| `discovered_taxonomy.json` | Candidate clusters, evidence, representative members, ungrouped patterns, sessions without patterns and completion status |
+| `discovery_review.md` | Human-readable clusters plus every analyzed session, quoted evidence, successful/ambiguous references, uncertainties and errors |
+| `discovery_errors.jsonl` | Input, trace-analysis or taxonomy errors with trace/source context; rejected output is not promoted to a finding |
+| `run_metadata.json` | Requested model/provider, prompt and validation versions, SHA-256 of the exact input dataset, counts, cache hits and run/taxonomy status |
+
+Successful responses are cached under `outputs/discovery/cache/`, or a chosen
+`--cache-dir`. Keys include provider/configuration, Codex SDK version, requested model, full prompt
+and prompt version, schema, validation version and canonical relevant input hash.
+The taxonomy key includes the dataset hash and all included validated analyses.
+Fake, Codex, and previous Responses clients use different cache namespaces. Cache hits are revalidated
+against source evidence. Corrupted entries cause a reported error; remove that
+entry to retry. Delete the cache or use another directory for fresh generations.
+
+Parsed inputs, validation and grouping membership checks are deterministic.
+Uncached model generations are not guaranteed to repeat; a model alias may also
+change upstream. Caches preserve accepted prior responses, not model determinism.
+Cache files and artifacts contain trace data and should be handled like the input.
+Each discovery file is replaced atomically, but the output set is not a transaction;
+concurrent writers to the same output directory are unsupported.
+
+Exit codes: **0** for a fully valid run, **1** for partial/validation failures,
+**2** for fatal client configuration or command/I/O errors. Missing SDK/runtime dependencies and Codex login/model-access failures
+produce explicit errors and no fabricated discoveries. If no validated traces are
+available, taxonomy status is `skipped`, not a claimed discovery of zero failures.
+
+### Tests and current validation
+
+```sh
+.venv/bin/python -m pytest -q
+# Full 30-session integration using a clearly identified scripted fake client:
+.venv/bin/python -m pytest -q tests/test_discovery.py::test_all_30_candidates_fake_integration_and_cache
+```
+
+The fake client is test-only dependency injection (`LLMClient.complete`), with
+explicit `fake_scripted` metadata and a prominent review warning. It validates
+plumbing, dynamic names, semantic grouping responses, multiple memberships,
+successful/ambiguous retention, reference rejection, partial failures, request
+contracts, bounded retries and cache reuse. It does not measure discovery quality.
+The 30-session fake integration intentionally asserts no failure taxonomy.
+
+The Codex SDK migration was verified using the installed SDK signatures and
+mocked SDK calls; no live model analysis was performed during migration.
+No reviewer gold file was inspected or used. Existing baseline expectations remain
+available only to their original tests and never enter discovery or taxonomy inputs.
+
+### Module map and Stage 1 limits
+
+- `src.observations`: neutral extraction from the existing `Trace` representation.
+- `src.llm`: injectable client protocol and `CodexClient` SDK implementation
+  (`OpenAIClient` remains a compatibility alias).
+- `src.discovery_schema`: shared output contracts and evidence/membership validation.
+- `src.discovery`: prompts, cache, two-pass orchestration and run artifacts.
+- `src.discovery_report`: escaped Markdown review with original evidence excerpts.
+- `src.cli`: existing `analyze` plus the separate `discover` command.
+
+This intentionally uses sequential per-trace calls and one grouping pass over the
+batch. Large datasets may exceed context limits; there is no silent truncation,
+embedding index, hierarchical clustering or concurrent worker system. Retry limits
+bound requests, not total spend. Model response IDs, token usage/cost accounting,
+and model-version pinning beyond the requested model string are not yet recorded.
+
+Recommended next steps: run a chosen model on the 30 candidates; independently
+review evidence relevance and cluster usefulness; then add request/usage telemetry
+and a reviewed context-budget/chunking strategy if larger inputs warrant it.
+Semantic quality and prompt-injection resilience remain unmeasured until a real
+model run and independent review. Eval construction remains a later stage.

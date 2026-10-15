@@ -1,4 +1,4 @@
-"""Command line entry point; runtime uses only the Python standard library."""
+"""CLI for the stdlib baseline and optional Codex-assisted discovery."""
 
 import argparse
 import json
@@ -18,7 +18,27 @@ def main(argv: list[str] | None = None) -> int:
     analyze.add_argument("--input", required=True, type=Path)
     analyze.add_argument("--output", required=True, type=Path)
     analyze.add_argument("--input-format", choices=("auto", "raw", "normalized"), default="auto")
+    discover = commands.add_parser("discover", help="Discover behavioral patterns using an LLM")
+    discover.add_argument("--input", required=True, type=Path)
+    discover.add_argument("--output", required=True, type=Path)
+    discover.add_argument("--model", required=True)
+    discover.add_argument("--input-format", choices=("auto", "raw", "normalized"), default="auto")
+    discover.add_argument("--cache-dir", type=Path)
+    discover.add_argument("--max-attempts", type=int, default=3)
     args = parser.parse_args(argv)
+    if args.command == "discover":
+        from .discovery import run_discovery
+        from .llm import CodexClient
+        try:
+            client = CodexClient(max_attempts=args.max_attempts)
+            code = run_discovery(args.input, args.output, model=args.model, client=client,
+                                 input_format=args.input_format, cache_dir=args.cache_dir,
+                                 progress=lambda message: print(message, file=sys.stderr))
+            print(f"Discovery finished with exit code {code}. Review: {args.output / 'discovery_review.md'}")
+            return code
+        except (OSError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
     analyses = []
     errors = []
     try:

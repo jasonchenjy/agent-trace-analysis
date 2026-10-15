@@ -6,6 +6,7 @@ requires-python = ">=3.10"
 dependencies = []
 
 [project.optional-dependencies]
+discovery = ["openai-codex==0.162.1"]
 test = ["pytest>=8,<10"]
 
 [tool.pytest.ini_options]
