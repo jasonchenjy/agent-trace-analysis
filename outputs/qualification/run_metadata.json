@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "run_kind": "scripted_qualification",
+  "run_id": "qualification-e89b5a359c0a45579f9314a407330871",
+  "created_at": "2026-10-16T00:56:26.975061+00:00",
+  "implementation_version": "benchmark-v1",
+  "model": "scripted-controls-v1",
+  "harness_version": "harness-v1",
+  "provenance": {
+    "approved_specs_sha256": "09eede4a66a7829e097cf61dc2c955c2f55a015fa505e548b8750bad6632ae5b",
+    "approval_manifest_sha256": "cde0a8ad3fe0d2f1b920a6675482455618f53f44c3ed8ecaf13c030db5f9a4f1",
+    "source": {
+      "repository": "jasonchenjy/agent-trace-analysis",
+      "commit": "fd6c6b2eb54b54e1ab46ebf8d23e1d056d7ba2da",
+      "proposal_path": "outputs/proposals_v2/eval_proposals.json",
+      "proposal_git_blob_sha": "18a3455130f7b821866fcb67a2355b577907c8ae",
+      "dataset_sha256": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66",
+      "supporting_paths": [
+        "outputs/proposals_v2/proposal_run_metadata.json",
+        "src/proposal_contract.py",
+        "README.md"
+      ]
+    },
+    "source_files": [
+      {
+        "path": "outputs/proposals_v2/eval_proposals.json",
+        "sha256": "b871af3b1e202a38defa49fb3015c052c00fefb132d64716f3a49674cd985417"
+      },
+      {
+        "path": "outputs/proposals_v2/proposal_run_metadata.json",
+        "sha256": "fa2379de3a93f27038a7edf6227f9dd7483c98a0c1c3e1c4c24fe036b100bfee"
+      },
+      {
+        "path": "reviews/eval_proposal_review_v2.json",
+        "sha256": "6886d36fdf5f2a322db28d347a945e1b2b43e3e21327041315d584f53d7cc560"
+      },
+      {
+        "path": "outputs/discovery/discovered_taxonomy.json",
+        "sha256": "a7b73826a146604b3fa8e26ef1d89388d1f4b63861b569e4c001fdc58461a073"
+      },
+      {
+        "path": "outputs/discovery/trace_discoveries.jsonl",
+        "sha256": "2ca350cb59f578ac8f9e1fb52a4cee6118707b5a2ce969cb41828aa7571cf7c1"
+      },
+      {
+        "path": "reviews/human_review.json",
+        "sha256": "32e369e50bde227351387bd5687a75958f5d6977571721002179218e9b965478"
+      },
+      {
+        "path": "data/candidate_traces.jsonl",
+        "sha256": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66"
+      }
+    ]
+  },
+  "artifact_hashes": {
+    "results.json": "edf3985db790eb27bf534d4049f9ec24d733637ac2f24efce8ebd33df85bed18",
+    "episodes.jsonl": "cb186720f5d02586ac1b3799f8043d21aa72f525d979c5e392bca8edb36dc04f",
+    "errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "execution_status": "completed"
+}

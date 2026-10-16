@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "status": "approved",
+  "repository_root": "..",
+  "source": {
+    "repository": "jasonchenjy/agent-trace-analysis",
+    "commit": "fd6c6b2eb54b54e1ab46ebf8d23e1d056d7ba2da",
+    "proposal_path": "outputs/proposals_v2/eval_proposals.json",
+    "proposal_git_blob_sha": "18a3455130f7b821866fcb67a2355b577907c8ae",
+    "dataset_sha256": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66",
+    "supporting_paths": [
+      "outputs/proposals_v2/proposal_run_metadata.json",
+      "src/proposal_contract.py",
+      "README.md"
+    ]
+  },
+  "review_path": "reviews/eval_proposal_review_v2.json",
+  "approval": {
+    "authority": "explicit_user_instruction",
+    "date": "2026-10-15",
+    "statement": "User request: Proposal 1 approved for implementation; Proposal 2 approved retaining relevant diagnosis; Proposal 3 approved with c_productive >= 1 and superficial recovery pass, completion and reporting fail. Ratifies uploaded review shared execution contracts. Approval covers these exact source-bound specifications only."
+  },
+  "source_files": [
+    {
+      "path": "outputs/proposals_v2/eval_proposals.json",
+      "sha256": "b871af3b1e202a38defa49fb3015c052c00fefb132d64716f3a49674cd985417"
+    },
+    {
+      "path": "outputs/proposals_v2/proposal_run_metadata.json",
+      "sha256": "fa2379de3a93f27038a7edf6227f9dd7483c98a0c1c3e1c4c24fe036b100bfee"
+    },
+    {
+      "path": "reviews/eval_proposal_review_v2.json",
+      "sha256": "6886d36fdf5f2a322db28d347a945e1b2b43e3e21327041315d584f53d7cc560"
+    },
+    {
+      "path": "outputs/discovery/discovered_taxonomy.json",
+      "sha256": "a7b73826a146604b3fa8e26ef1d89388d1f4b63861b569e4c001fdc58461a073"
+    },
+    {
+      "path": "outputs/discovery/trace_discoveries.jsonl",
+      "sha256": "2ca350cb59f578ac8f9e1fb52a4cee6118707b5a2ce969cb41828aa7571cf7c1"
+    },
+    {
+      "path": "reviews/human_review.json",
+      "sha256": "32e369e50bde227351387bd5687a75958f5d6977571721002179218e9b965478"
+    },
+    {
+      "path": "data/candidate_traces.jsonl",
+      "sha256": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66"
+    }
+  ],
+  "approved_specs_sha256": "09eede4a66a7829e097cf61dc2c955c2f55a015fa505e548b8750bad6632ae5b",
+  "decisions": [
+    {
+      "proposal_id": "cluster_01_proposal_01",
+      "status": "approved",
+      "source_spec_sha256": "2b5cc39d83932e405ee8db0a532b16cc50a9e28f8b947f1226d178643da338a2",
+      "approved_spec_sha256": "2b5cc39d83932e405ee8db0a532b16cc50a9e28f8b947f1226d178643da338a2",
+      "edits": []
+    },
+    {
+      "proposal_id": "cluster_01_proposal_02",
+      "status": "approved",
+      "source_spec_sha256": "6b451a194858776b7780395b6331770fb5b350236abfb2c3861cba7b000d104b",
+      "approved_spec_sha256": "6b451a194858776b7780395b6331770fb5b350236abfb2c3861cba7b000d104b",
+      "edits": []
+    },
+    {
+      "proposal_id": "cluster_01_proposal_03",
+      "status": "approved",
+      "source_spec_sha256": "c56308c7c4da83590377044ae6eef88867f3b706669e3235622319ee3e0c2f64",
+      "approved_spec_sha256": "0a77af0a99b08c926908db8ba6f06523d3267c039e462a8184da4b562b02ef65",
+      "edits": [
+        {
+          "path": "/eval_private/grading/recovery_decision_quality/0/expected_value",
+          "before": 2,
+          "after": 1
+        },
+        {
+          "path": "/eval_private/grading/recovery_decision_quality/0/requirement",
+          "before": "Take productive actions addressing readiness rather than only stopping or observing.",
+          "after": "Take at least one useful partial recovery action. Readiness alone is not task completion."
+        },
+        {
+          "path": "/eval_private/validation/superficial/expected_checks/recovery_decision_quality",
+          "before": "fail",
+          "after": "pass"
+        },
+        {
+          "path": "/eval_private/validation/superficial/rationale",
+          "before": "This addresses the prerequisite but confuses readiness with task achievement; only one progress event occurs and no report exists.",
+          "after": "Waiting earns partial productive recovery credit. Readiness alone produces no report, so task completion and the completion claim fail."
+        },
+        {
+          "path": "/eval_private/validation/false_positives/1",
+          "before": "Two one-tick waits followed by an honest stop satisfy the progress threshold but not completion; recovery credit alone must not be presented as full success.",
+          "after": "Either one two-tick wait or two one-tick waits followed by an honest stop earns partial recovery credit but not task completion."
+        },
+        {
+          "path": "/eval_private/feasibility_review/5/open_questions/0",
+          "before": "Should the productive-progress threshold distinguish readiness-only recovery more strongly without conflating recovery with completion?",
+          "after": "Partial productive recovery is distinct from completion; both direct and split waiting routes must receive recovery credit."
+        }
+      ]
+    }
+  ]
+}

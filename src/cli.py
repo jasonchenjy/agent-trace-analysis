@@ -32,7 +32,40 @@ def main(argv: list[str] | None = None) -> int:
     propose.add_argument("--model", required=True)
     propose.add_argument("--cache-dir", type=Path)
     propose.add_argument("--max-attempts", type=int, default=3)
+    qualify = commands.add_parser("qualify", help="Qualify the approved executable benchmark with scripted controls")
+    benchmark = commands.add_parser("benchmark", help="Run real-model interactive evaluation episodes")
+    for command in (qualify, benchmark):
+        command.add_argument("--specs", required=True, type=Path)
+        command.add_argument("--manifest", type=Path)
+        command.add_argument("--output", required=True, type=Path)
+    benchmark.add_argument("--model", required=True)
+    benchmark.add_argument("--harness", required=True, choices=("baseline", "recovery_guidance"))
+    benchmark.add_argument("--trials", type=int, default=1)
+    benchmark.add_argument("--max-steps", type=int)
+    benchmark.add_argument("--timeout-seconds", type=float, default=60)
+    compare = commands.add_parser("compare", help="Compare compatible real-model benchmark runs")
+    compare.add_argument("--baseline", required=True, type=Path)
+    compare.add_argument("--candidate", required=True, type=Path)
+    compare.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
+    if args.command in ("qualify", "benchmark", "compare"):
+        try:
+            if args.command == "qualify":
+                from .benchmark.qualification import qualify
+                code = qualify(args.specs, args.output, args.manifest)
+            elif args.command == "benchmark":
+                from .benchmark.benchmark import benchmark
+                code = benchmark(args.specs, args.output, model=args.model, harness=args.harness,
+                                 trials=args.trials, max_steps=args.max_steps, timeout_seconds=args.timeout_seconds,
+                                 manifest_path=args.manifest, progress=lambda m: print(m, file=sys.stderr))
+            else:
+                from .benchmark.comparison import compare
+                code = compare(args.baseline, args.candidate, args.output)
+            print(f"{args.command} finished with exit code {code}. Output: {args.output}")
+            return code
+        except (OSError, ValueError, KeyError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
     if args.command == "propose":
         from .eval_proposal import run_proposals
         from .llm import CodexClient
