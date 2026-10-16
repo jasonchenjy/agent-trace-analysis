@@ -5,13 +5,16 @@ non-leakage of arbitrary prose. Nothing here executes a proposed condition.
 """
 
 import re
+from copy import deepcopy
 
 from .discovery import canonical
 from .discovery_schema import STRING, STRINGS, array, obj, validate_shape
 from .review_gate import require
+from .proposal_contract import (SCHEMA_VERSION, ENVIRONMENT_MODEL, COLLECTION, FEASIBILITY_REVIEW,
+                                FINAL_RESPONSE_FORMAT, SCALAR, validate_contract)
 
 
-VALIDATION_VERSION = "proposal-references-v1"
+VALIDATION_VERSION = "proposal-references-v2"
 PROFILES = ("recoverable", "nonrecoverable", "retry_appropriate")
 DIMENSIONS = ("task_completion", "recovery_decision_quality", "safety_policy_compliance", "final_response_accuracy")
 CATEGORIES = ("tool_interface", "initial_state", "network", "filesystem", "permission",
@@ -64,6 +67,23 @@ PROPOSAL_SCHEMA = obj(
     ),
 )
 
+# Retain validation of archived v1 artifacts; current generation requires v2.
+PROPOSAL_SCHEMA_V1 = deepcopy(PROPOSAL_SCHEMA)
+PROPOSAL_SCHEMA["properties"]["schema_version"] = {"type": "integer", "enum": [SCHEMA_VERSION]}
+PROPOSAL_SCHEMA["required"].append("schema_version")
+public_schema = PROPOSAL_SCHEMA["properties"]["agent_visible"]
+public_schema["properties"]["final_response_format"] = FINAL_RESPONSE_FORMAT
+public_schema["required"].append("final_response_format")
+private_schema = PROPOSAL_SCHEMA["properties"]["eval_private"]
+for name, schema in (("environment_model", ENVIRONMENT_MODEL), ("feasibility_review", FEASIBILITY_REVIEW)):
+    private_schema["properties"][name] = schema
+    private_schema["required"].append(name)
+signal_schema = private_schema["properties"]["grading"]["properties"]["signals"]["items"]
+signal_schema["properties"].update(value_type=enum("boolean", "integer"), collection=COLLECTION)
+signal_schema["required"] += ["value_type", "collection"]
+for dimension in DIMENSIONS:
+    private_schema["properties"]["grading"]["properties"][dimension]["items"]["properties"]["expected_value"] = SCALAR
+
 
 def _unique(values, name, nonempty=True):
     require(not nonempty or bool(values), f"{name}: must not be empty")
@@ -76,13 +96,21 @@ def agent_task(proposal):
     Never serialize the full proposal as an agent task: it contains private design
     and grading. Even this projection requires human review for semantic leakage.
     """
-    return {**proposal["agent_visible"], "environment_conditions": [
+    public = {**proposal["agent_visible"], "environment_conditions": [
         {"condition_id": c["condition_id"], "category": c["category"], "description": c["description"]}
         for c in proposal["environment"]["designed"] if c["visibility"] == "agent_visible"]}
+    if proposal.get("schema_version") == 2:
+        # Only interface names/types/domains are public, never transition tables,
+        # defaults, fixture bodies, metric recipes or goal states.
+        public["tool_interfaces"] = [{"name": t["name"], "operations": [
+            {k: op[k] for k in ("name", "description", "arguments")} for op in t["operations"]]}
+            for t in proposal["eval_private"]["environment_model"]["tools"]]
+    return public
 
 
 def validate_proposal(proposal, context, *, profile=None, proposal_id=None):
-    validate_shape(proposal, PROPOSAL_SCHEMA)
+    version = proposal.get("schema_version", 1) if isinstance(proposal, dict) else 1
+    validate_shape(proposal, PROPOSAL_SCHEMA_V1 if version == 1 else PROPOSAL_SCHEMA)
     cluster = context["clusters"][0]
     require(proposal["dataset_sha256"] == context["dataset_sha256"], "proposal dataset hash mismatch")
     require(proposal["source_cluster_id"] == cluster["cluster_id"], "proposal references unselected cluster")
@@ -175,6 +203,8 @@ def validate_proposal(proposal, context, *, profile=None, proposal_id=None):
     require(not any(re.search(r"(?<!\w)" + re.escape(i.casefold()) + r"(?!\w)", public_text)
                     for i in private_ids | set(criterion_ids)),
             "private grading/condition ID leaked into agent-visible context")
+    if version == 2:
+        validate_contract(proposal)
     return proposal
 
 

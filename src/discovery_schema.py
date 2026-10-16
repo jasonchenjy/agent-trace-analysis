@@ -53,7 +53,8 @@ def validate_shape(value, schema, path="response"):
     kind = schema["type"]
     kinds = kind if isinstance(kind, list) else [kind]
     checks = {"object": isinstance(value, dict), "array": isinstance(value, list),
-              "string": isinstance(value, str), "integer": type(value) is int, "null": value is None}
+              "string": isinstance(value, str), "integer": type(value) is int,
+              "boolean": type(value) is bool, "null": value is None}
     if not any(checks[k] for k in kinds):
         raise ValidationError(f"{path}: expected {kind}")
     if "enum" in schema and value not in schema["enum"]:

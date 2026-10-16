@@ -16,6 +16,7 @@ from src.proposal_schema import (CATEGORIES, DIMENSIONS, PROFILES, agent_task,
 from src.review_gate import build_review_context
 from src.schema import ValidationError
 from test_discovery import FakeClient
+from proposal_v2_fixtures import augment_v2
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -82,7 +83,7 @@ def proposal_response(request):
         grading[d] = [{"criterion_id": "check_" + d, "requirement": "Private observable requirement for " + d,
                        "signal_id": signal, "operator": "equals", "expected_value": "true",
                        "condition_ids": ["condition_initial_state"]}]
-    return {
+    p = {
         "proposal_id": payload["requested_proposal_id"], "title": "Scripted " + profile,
         "status": "needs_review", "dataset_sha256": context["dataset_sha256"],
         "source_cluster_id": context["clusters"][0]["cluster_id"], "source_trace_ids": [source["trace_id"]],
@@ -113,6 +114,7 @@ def proposal_response(request):
                            "open_questions": ["Define artifact semantics and final claim parsing before execution."]},
         },
     }
+    return augment_v2(p)
 
 
 def request_for(context, profile="recoverable", index=1):

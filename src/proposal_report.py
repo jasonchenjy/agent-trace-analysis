@@ -1,7 +1,10 @@
 """Engineer-facing proposal review; all generated/source prose is escaped."""
 
+import json
+
 from .discovery_report import safe, evidence_lines
 from .proposal_schema import DIMENSIONS
+from .proposal_contract import complexity_summary
 
 
 def bullets(values):
@@ -44,6 +47,9 @@ def render_proposal_review(metadata, context, proposals, errors):
         lines += [f"Checkpoint context: {safe(checkpoint['visible_context'])}",
                   f"Recent tool failure: {safe(checkpoint['recent_tool_failure'])}", "", "Available tools:", ""]
         lines += bullets(checkpoint["available_tools"])
+        if p.get("schema_version") == 2:
+            lines += ["", "Final response format: a JSON object with task_completed (boolean) and summary (string).",
+                      "Only the structured completion claim is deterministically compared with goal evidence; summary prose needs review."]
         lines += ["", "### Provenance: observed excerpts and reviewed statements", "",
                   "Observed excerpts establish only what the trace reports; historical environment fidelity is not established.", ""]
         for eid in environment["observed_evidence_ids"]:
@@ -67,6 +73,29 @@ def render_proposal_review(metadata, context, proposals, errors):
             lines += [f"- {safe(c['condition_id'])} — {safe(c['category'])}; visibility: {safe(c['visibility'])}.",
                       f"  Condition: {safe(c['description'])}", f"  Design rationale: {safe(c['rationale'])}"]
         lines += ["", "Unknown environment details:", ""] + bullets(environment["unknown"])
+        if p.get("schema_version") == 2:
+            model = private["environment_model"]
+            counts = complexity_summary(p)
+            lines += ["", "### Bounded mock environment design — not executed", "",
+                      f"Tools: {counts['tools']}; operations: {counts['operations']}; states: {counts['states']}; "
+                      f"transitions: {counts['transitions']}; fixtures: {counts['fixtures']} ({counts['fixture_bytes']} bytes); "
+                      f"post-checkpoint step limit: {counts['max_steps']}.",
+                      f"Initial state: {safe(model['initial_state'])}; external dependencies: none.",
+                      "State/call rules match exact argument values. Unmatched valid calls use operation defaults without state changes.",
+                      "Unknown operations/invalid arguments record invalid_request without state changes. Each call consumes one step.",
+                      "Only declared transitions change state. Fixture snapshots and response text are literal mock data.",
+                      "Checkpoint events are excluded from metrics. Success requires a declared goal state; stopping elsewhere is incomplete.", ""]
+            for t in model["transitions"]:
+                args = json.dumps({a["name"]: a["value"] for a in t["arguments"]}, ensure_ascii=True)
+                lines += [f"- {safe(t['from_state'])} → {safe(t['to_state'])}: {safe(t['tool'])}.{safe(t['operation'])} "
+                          f"{safe(args)}; response {safe(t['response']['code'])}; event {safe(t['event'])}."]
+            lines += ["", "Complete private declarative specification:", "", "```json",
+                      json.dumps(model, indent=2, ensure_ascii=True).replace("`", "\\u0060"), "```", "",
+                      "### Human Review #2 feasibility checklist", "",
+                      "Static limits and references were checked; none of these dimensions has been approved or execution-tested.", ""]
+            for check in private["feasibility_review"]:
+                lines += [f"- {safe(check['dimension'])}: needs_review. {safe(check['rationale'])}"]
+                lines += [f"  Review question: {safe(q)}" for q in check["open_questions"]]
         solution = private["valid_solution_space"]
         lines += ["", "### Eval-private acceptable solution space", ""] + bullets(solution["acceptable_strategies"])
         lines += ["", f"Outcome verification: {safe(solution['outcome_verification'])}", "", "Disallowed shortcuts:", ""]
@@ -78,11 +107,13 @@ def render_proposal_review(metadata, context, proposals, errors):
         for signal in grading["signals"]:
             lines += [f"- Signal {safe(signal['signal_id'])} ({safe(signal['kind'])}): {safe(signal['description'])}",
                       f"  Proposed collection: {safe(signal['collection_proposal'])}"]
+            if p.get("schema_version") == 2:
+                lines += [f"  Native type: {safe(signal['value_type'])}; collection recipe: {safe(json.dumps(signal['collection']))}."]
         for dimension in DIMENSIONS:
             lines += ["", f"#### {safe(dimension)}", ""]
             for c in grading[dimension]:
                 lines += [f"- {safe(c['criterion_id'])}: {safe(c['requirement'])}",
-                          f"  Signal {safe(c['signal_id'])} {safe(c['operator'])} {safe(c['expected_value'])}; "
+                          f"  Signal {safe(c['signal_id'])} {safe(c['operator'])} {safe(json.dumps(c['expected_value']))}; "
                           f"design conditions: {safe(', '.join(c['condition_ids']))}."]
         validation = private["validation"]
         lines += ["", "### Behavioral hypotheses — not executed test results", ""]

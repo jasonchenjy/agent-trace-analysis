@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "provider": "openai_codex",
+  "model": "gpt-6-astra",
+  "client_config": {
+    "provider": "openai_codex",
+    "sdk_version": "0.162.1",
+    "adapter_version": "codex-v1",
+    "sandbox": "read_only",
+    "output_mode": "output_schema",
+    "config_overrides": [
+      "features.shell_tool=false",
+      "features.apps=false",
+      "features.multi_agent=false",
+      "web_search=\"disabled\"",
+      "mcp_servers={}"
+    ]
+  },
+  "prompt_version": "eval-proposal-v2",
+  "validation_version": "proposal-references-v2",
+  "gate_version": "human-review-v1",
+  "proposal_schema_version": 2,
+  "complexity_limits": {
+    "tools": 3,
+    "operations": 6,
+    "states": 8,
+    "transitions": 20,
+    "fixtures": 4,
+    "fixture_bytes": 8192,
+    "fixture_bytes_each": 2048,
+    "max_steps": 12
+  },
+  "input_paths": {
+    "taxonomy": "outputs/discovery/discovered_taxonomy.json",
+    "discoveries": "outputs/discovery/trace_discoveries.jsonl",
+    "review": "reviews/human_review.json",
+    "traces": "data/candidate_traces.jsonl"
+  },
+  "input_source_hashes": {
+    "taxonomy": "a7b73826a146604b3fa8e26ef1d89388d1f4b63861b569e4c001fdc58461a073",
+    "discoveries": "2ca350cb59f578ac8f9e1fb52a4cee6118707b5a2ce969cb41828aa7571cf7c1",
+    "review": "32e369e50bde227351387bd5687a75958f5d6977571721002179218e9b965478",
+    "traces": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66"
+  },
+  "dataset_sha256": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66",
+  "selected_cluster_id": "cluster_01",
+  "requested_proposal_count": 3,
+  "semantic_validation": "human_review_required",
+  "execution_status": "not_executed",
+  "status": "completed",
+  "generated_proposal_count": 3,
+  "error_count": 0,
+  "cache": [
+    {
+      "proposal_id": "cluster_01_proposal_01",
+      "key": "cb77e22ed1d63ac480ff54874cb9e8968d7ee3f8d6827c19856ac11507c08b64",
+      "hit": true,
+      "accepted": true
+    },
+    {
+      "proposal_id": "cluster_01_proposal_02",
+      "key": "351a5f4c3544dd1d2a960b333241d756acddca6a06c9547fed7db136fbad62af",
+      "hit": true,
+      "accepted": true
+    },
+    {
+      "proposal_id": "cluster_01_proposal_03",
+      "key": "16e57c0e02ca6d21bb870e6655d647a00376e154c56ede792fa0ee62ce434369",
+      "hit": true,
+      "accepted": true
+    }
+  ],
+  "cache_hits": 3,
+  "feasibility_review": "static_constraints_checked_human_review_required",
+  "complexity": [
+    {
+      "proposal_id": "cluster_01_proposal_01",
+      "tools": 2,
+      "operations": 4,
+      "states": 3,
+      "transitions": 12,
+      "fixtures": 4,
+      "fixture_bytes": 540,
+      "max_steps": 8,
+      "execution_status": "not_executed",
+      "review_status": "needs_review"
+    },
+    {
+      "proposal_id": "cluster_01_proposal_02",
+      "tools": 2,
+      "operations": 4,
+      "states": 2,
+      "transitions": 4,
+      "fixtures": 3,
+      "fixture_bytes": 638,
+      "max_steps": 6,
+      "execution_status": "not_executed",
+      "review_status": "needs_review"
+    },
+    {
+      "proposal_id": "cluster_01_proposal_03",
+      "tools": 2,
+      "operations": 3,
+      "states": 4,
+      "transitions": 10,
+      "fixtures": 4,
+      "fixture_bytes": 346,
+      "max_steps": 8,
+      "execution_status": "not_executed",
+      "review_status": "needs_review"
+    }
+  ]
+}
