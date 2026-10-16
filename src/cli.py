@@ -32,6 +32,7 @@ def main(argv: list[str] | None = None) -> int:
     propose.add_argument("--model", required=True)
     propose.add_argument("--cache-dir", type=Path)
     propose.add_argument("--max-attempts", type=int, default=3)
+    propose.add_argument("--validity-aware", action="store_true", help="Add independent validity critique and at most one revision")
     qualify = commands.add_parser("qualify", help="Qualify the approved executable benchmark with scripted controls")
     benchmark = commands.add_parser("benchmark", help="Run real-model interactive evaluation episodes")
     for command in (qualify, benchmark):
@@ -68,13 +69,16 @@ def main(argv: list[str] | None = None) -> int:
             return 2
     if args.command == "propose":
         from .eval_proposal import run_proposals
+        if args.validity_aware:
+            from .validity_pipeline import run_validity_proposals as run_proposals
         from .llm import CodexClient
         try:
             code = run_proposals(args.taxonomy, args.discoveries, args.review, args.traces, args.output,
                                  cluster_id=args.cluster, model=args.model,
                                  client=CodexClient(max_attempts=args.max_attempts), cache_dir=args.cache_dir,
                                  progress=lambda message: print(message, file=sys.stderr))
-            print(f"Proposals finished with exit code {code}. Review: {args.output / 'proposal_review.md'}")
+            report = "validity_review.md" if args.validity_aware else "proposal_review.md"
+            print(f"Proposals finished with exit code {code}. Review: {args.output / report}")
             return code
         except (OSError, ValueError) as exc:
             print(f"error: {exc}", file=sys.stderr)

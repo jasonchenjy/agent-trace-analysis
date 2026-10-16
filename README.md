@@ -926,3 +926,119 @@ trace, dataset, review, proposal, and approved-specification provenance. Episode
 logs include public exchanges, raw final responses, private state changes, and
 authoritative event tags for inspection; do not feed these evaluator logs back to
 an evaluated model as task input.
+
+## Pipeline 2 v3: validity-aware construction (opt in)
+
+The existing `propose` command still generates v2 contracts by default. Add
+`--validity-aware` to generate the same v2 proposal format with separately versioned
+validity design, independent LLM critique, and revision sidecars. Pipeline 1 and
+Pipeline 3 implementations and approval manifests are unchanged.
+
+```bash
+.venv/bin/python -m src.cli propose \
+  --taxonomy outputs/discovery/discovered_taxonomy.json \
+  --discoveries outputs/discovery/trace_discoveries.jsonl \
+  --review reviews/human_review.json \
+  --traces data/candidate_traces.jsonl \
+  --cluster cluster_01 --validity-aware \
+  --output outputs/proposals_v3_new --model "$CODEX_MODEL"
+```
+
+Use a **new output directory** for each run. Existing outputs are rejected rather
+than overwritten; `--cache-dir` can reuse a previous run's cache. Cache identities
+include model/client identity, stage/prompt version and instructions, input hash,
+output schema and its version, and offline-check version. Cached responses are
+revalidated. Raw responses, including invalid responses, remain in the cache;
+errors identify the relevant response cache key.
+
+The construction sequence is: reviewed cluster gate → validity-aware generator →
+v2 shape/provenance/contract checks → offline contract probes → independent critic
+→ at most one revision for major/critical findings → structural, deterministic and
+provenance revalidation → independent re-critique → human review. Each model stage
+uses separate instructions and an ephemeral tool-disabled Codex session. The critic
+receives the approved cluster/capability-gap context and reviewed evidence, never
+reviewer gold labels or unrelated expected answers. Re-critique must account for
+each original finding with evidence of resolution, uncertainty, or nonresolution.
+
+The proposal itself always remains `status: needs_review`. Separate readiness
+metadata distinguishes `ready_for_human_review`, `human_review_with_unresolved_risks`,
+and `blocked_for_human_review`. Critical unresolved findings, missing critique,
+invalid revisions and failed rechecks block readiness. None of these statuses is
+human approval or authority to execute a benchmark. A failed revision preserves the
+valid original. A failed post-revision critique preserves both versions and blocks
+readiness. Later candidates continue after nonfatal errors; fatal client errors are
+reported for skipped slots. Artifacts are checkpointed between stages.
+
+The generator explicitly explains Tool Failure Recovery behaviors, task necessity,
+shortcuts, confounding skills, and possible solution leakage. The critic searches
+for construct threats and grading false positives/negatives, with evidence,
+severity, proposed repairs, and Good/Bad/Superficial scoring examples. Completion,
+productive recovery, safety, and structured completion-claim accuracy remain
+separate scoring dimensions. A nonrecoverable task cannot earn completion merely
+by reporting its blocker honestly.
+
+Offline checks reuse Pipeline 3's **unmodified** `FiniteStateEnvironment` and
+`grade`; they do not run agents or load/change approved specifications. Existing
+v2 validation checks reachability, goal fixtures, signal types, transition event
+semantics, unauthorized-event predicates, and nonrecoverable feasibility. Additional
+exploration records concrete counterexample paths over up to 1,200 distinct
+state/event-count classes, bounded by the proposal's step limit. The report exposes
+truncation. State/count equivalence is sufficient for the current deterministic
+metrics, but does not establish semantic relevance, valid solution diversity, or
+capability measurement. Observation-only recovery credit and incomplete-goal
+recovery credit are **review leads**, not automatic defects.
+
+Robustness variants support checkpoint error wording and explicit alternative or
+reordered diagnostic sequences. All declare invariants for user intent,
+feasibility, permissions, available information, success criteria, and solution
+space. Wording probes change only the two matching checkpoint feedback fields;
+behavioral probes hold environment/grading fixed and replay declared calls offline.
+The probes report concrete grading differences. Semantic preservation still needs
+review, and **robustness remains unvalidated until Pipeline 3 executes variants**.
+The v2 grader checks the completion boolean, not arbitrary summary prose; safety
+coverage remains limited to declared simulator events. An LLM critic is a design
+quality assessment, not proof of empirical validity or calibrated confidence.
+
+Outputs:
+
+- `eval_proposals.json`: final unapproved v2 proposals.
+- `original_proposals.json`: original validated generator constructions, including design explanations.
+- `validity_assessments.json`: original/revised critiques, offline evidence, final design and readiness.
+- `revision_log.json`: at most one attempt per candidate, trigger findings, hashes and structured before/after diffs.
+- `validity_review.md`: human-readable findings, scoring examples, variants, changes and review decisions.
+- `proposal_run_metadata.json`: source hashes, versions, model/client identity, cache and validation/readiness status.
+- `proposal_errors.jsonl`: partial generation/validation failures, stage and cache key.
+- `approved_taxonomy.json`: exact gated source context; no new human approval is created.
+
+Held-out critic regressions are separate fixtures in `tests/fixtures/validity/`:
+explicit recovery hint, equivalent waits with inconsistent counts, and irrelevant
+diagnostic credit. Expected concerns live in test/review interpretation, not the
+production critic prompt. To run the actual model and save its unedited findings:
+
+```bash
+.venv/bin/python -m src.validity_regression \
+  --fixtures tests/fixtures/validity \
+  --context outputs/proposals_v2/approved_taxonomy.json \
+  --output outputs/validity_regression_new --model "$CODEX_MODEL"
+```
+
+`tests/test_eval_validity.py` uses Fake Clients for deterministic workflow and
+contract tests. Such tests do **not** measure a real critic's semantic detection
+accuracy. Real model regression output records provider/model, exact findings,
+cache provenance, and partial errors; reviewers must match issues to the intended
+held-out concerns without treating three cases as a calibrated accuracy estimate.
+
+Recorded real-model run (`gpt-6-astra`):
+
+- [Candidate validity report](outputs/proposals_v3_review/validity_review.md)
+- [Chinese v2/v3 design comparison](outputs/proposals_v3_review/v2_v3_comparison.md)
+- [Real held-out Critic regression review](outputs/validity_regression_v3_final/critic_regression_review.md)
+- [Test, cache-replay and historical-integrity evidence](outputs/proposals_v3_review/implementation_verification.json)
+
+The run produced three structurally valid candidates, each with one validated revision
+and an independent recheck. All remain `needs_review` and `blocked_for_human_review`:
+feedback-independent strategies and scoring-scope limitations remain for human
+adjudication. Pipeline completion is not candidate approval. All three held-out target
+concerns were raised by the real Critic, without implying a calibrated accuracy rate.
+Runtime facts in the report distinguish model allegations from established interpreter
+and parser behavior. No new candidate or robustness variant was run in Pipeline 3.

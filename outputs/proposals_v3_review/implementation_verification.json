@@ -1,0 +1,280 @@
+{
+  "checked_at_utc": "2026-10-16T05:47:29.471194+00:00",
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q",
+    "passed": 350,
+    "failed": 0,
+    "baseline_passed": 317,
+    "scope": "Fake LLM workflow and deterministic contract tests; not semantic model accuracy."
+  },
+  "historical_artifacts_and_pipeline3_code": [
+    {
+      "path": "outputs/approved/approval_manifest.json",
+      "sha256": "cde0a8ad3fe0d2f1b920a6675482455618f53f44c3ed8ecaf13c030db5f9a4f1",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/approved/approved_eval_specs.json",
+      "sha256": "09eede4a66a7829e097cf61dc2c955c2f55a015fa505e548b8750bad6632ae5b",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/benchmark_baseline/episodes.jsonl",
+      "sha256": "6b012873744ebb210b65d96ac3558f6ef4b6afbb16a9f697b1b13cfcb4a6e900",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/benchmark_baseline/errors.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/benchmark_baseline/results.json",
+      "sha256": "b8b55952f456b00ccb26a29a3d1a9f2a6fc80a7c7086acfbb13d710b8dcce689",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/benchmark_baseline/run_metadata.json",
+      "sha256": "b453b9940cf08b8aab264303e2678d33e1c9d6c635d42b0aa5f6fee71fd01cfe",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/benchmark_guided/episodes.jsonl",
+      "sha256": "ee751b4ae7aaded65d2429259eeb2a38a06a9033d9282bbeff6c50d01be71866",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/benchmark_guided/errors.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/benchmark_guided/results.json",
+      "sha256": "888498a75b1b7d4e9d4a09a5a05583877a187bbd64476fc9cb6e65e1537d81ce",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/benchmark_guided/run_metadata.json",
+      "sha256": "868b5c1abd14497f7eb7296867eda31877f211ca85abf07bcc41e63d536d24b4",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/comparison/comparison.json",
+      "sha256": "671b0c8303abd4e778add9591f9693f8dd7679da01e7a2b7de91e4e57c6850b9",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/comparison/comparison.md",
+      "sha256": "0f718383abe28558b28b919f43349d943f9fbfd9d23392206e2beef1528e8362",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals/approved_taxonomy.json",
+      "sha256": "77024bf276c94739521356b5e9acf31da7a80f8c3efd389a48fcd0f737fcd8cb",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals/cache/40bf6819bf80f2a5f322cc0c43044c23de0ea11cf168712ecfd7a44ce629f6b4.json",
+      "sha256": "6c2fa203086416f52c36cf408848296060ff9805c3fb2a66621699d4ae32531e",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals/cache/4c37d5602d112e43a07bcb55e281e650e1eba9e06bd66c0c51f4d3c0346804ab.json",
+      "sha256": "303295075d45b893c900e17a473b4f7737e0282ebae2e2065398b550317613cf",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals/cache/93b3d2687d82fe2f49cc20789a65946bd082bae0aa6fc73cb9391ca3e7fed866.json",
+      "sha256": "eb69828eb6fd9d2c406d9019d1a4741e4279c5f0b8e68b3023556ac1b3f1189f",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals/eval_proposals.json",
+      "sha256": "282dfb948cfc5e87cec1f5c146abb9838f3dc73fad0cc7c85b90ac94b944635e",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals/proposal_errors.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals/proposal_review.md",
+      "sha256": "a2903d83691f0f6a1e5996562d8c02162cd7b569c74f7596aa6c332b63c62e78",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals/proposal_run_metadata.json",
+      "sha256": "83ed0c9fa65201615b835372ed16564d522c23dfff5f8cc2fc8ba271b063127f",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals_v2/approved_taxonomy.json",
+      "sha256": "77024bf276c94739521356b5e9acf31da7a80f8c3efd389a48fcd0f737fcd8cb",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals_v2/cache/16e57c0e02ca6d21bb870e6655d647a00376e154c56ede792fa0ee62ce434369.json",
+      "sha256": "8a6801023a3cdead5690f881ddb85ba38bed15fac6cbb78cdc46af0d85b6cf29",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals_v2/cache/351a5f4c3544dd1d2a960b333241d756acddca6a06c9547fed7db136fbad62af.json",
+      "sha256": "9376e418985e34d1cfa2a00d23be689afe83968507efe1cefeb07b81acedd52b",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals_v2/cache/cb77e22ed1d63ac480ff54874cb9e8968d7ee3f8d6827c19856ac11507c08b64.json",
+      "sha256": "33c0c85f683bae3bcf3ec69d112ef3e34153a6bf781ea7938a0304b25434bb3d",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals_v2/eval_proposals.json",
+      "sha256": "b871af3b1e202a38defa49fb3015c052c00fefb132d64716f3a49674cd985417",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals_v2/proposal_errors.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals_v2/proposal_review.md",
+      "sha256": "85a8ee38bcdf85fea1e0aa8f05a2e8cae87e5635b9686c979ba4e76c457cdde7",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/proposals_v2/proposal_run_metadata.json",
+      "sha256": "fa2379de3a93f27038a7edf6227f9dd7483c98a0c1c3e1c4c24fe036b100bfee",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/qualification/episodes.jsonl",
+      "sha256": "cb186720f5d02586ac1b3799f8043d21aa72f525d979c5e392bca8edb36dc04f",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/qualification/errors.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/qualification/qualification_report.json",
+      "sha256": "c67133b1368375fdce2a079776f7d762c10aa22d00c3b6ee8777435d420f9ab9",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/qualification/qualification_report.md",
+      "sha256": "ebcad4ddfb35ae53424ad5feaf8c5854ec52a9cd2f51aacada28a36db39e9587",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/qualification/results.json",
+      "sha256": "edf3985db790eb27bf534d4049f9ec24d733637ac2f24efce8ebd33df85bed18",
+      "matches_head": true
+    },
+    {
+      "path": "outputs/qualification/run_metadata.json",
+      "sha256": "79b6ff1332f26239c666712e2b76adce7eb876d8a12bccf1b0725c32c83d5ed0",
+      "matches_head": true
+    },
+    {
+      "path": "reviews/approval_manifest_v2.json",
+      "sha256": "ad6ca3a8fb54c73527e6f252513c7aa456b019fa04545f9c7698777d0fb8fb59",
+      "matches_head": true
+    },
+    {
+      "path": "reviews/eval_proposal_review_v2.json",
+      "sha256": "6886d36fdf5f2a322db28d347a945e1b2b43e3e21327041315d584f53d7cc560",
+      "matches_head": true
+    },
+    {
+      "path": "reviews/human_review.json",
+      "sha256": "32e369e50bde227351387bd5687a75958f5d6977571721002179218e9b965478",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/__init__.py",
+      "sha256": "f6947c9d1f5b5f3f2fe9ffa02a1384a7f25ea59d34f930fbb553d3c98ae3e93a",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/approval.py",
+      "sha256": "8c1e224955123dc47712cd67b6bfd20b8b57ff2c44b4455b02a36e808d10afa2",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/benchmark.py",
+      "sha256": "2acd71f5f06c159d2985099f8ab7097d2ebc3b18d22502945a510ac254b48cc7",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/comparison.py",
+      "sha256": "0b0d8ebce16a5133e03bb239708943e9877df94a14ddd053374d6eeec98868fb",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/environment.py",
+      "sha256": "9f1a3e55b7e862d355f94a6c7c0b931e1657741083b3479dc2f85c3f0394e875",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/grader.py",
+      "sha256": "36923a9c7e80e0a532907b830655f1dc3bb850c3659b8aa8b209c43c3a7de5e5",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/model_client.py",
+      "sha256": "873e52f88e760f798ae83a64f72c1830701a5f08e4c6a19cdbb4fd611f3a7c0a",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/model_worker.py",
+      "sha256": "5c8478c2e27f378e0abcd81fd9b79706106b285bceb5698812fac2769ffc9ddd",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/qualification.py",
+      "sha256": "e651feff76fb6d8cc0c531eea9656e429f1f3456c83ea03d8a753e59480c6be3",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/reports.py",
+      "sha256": "9ef82ae9e3421160a8c0c8aa4487312e9f7f61437b66cfec36bb00d3fa61ab9e",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/runner.py",
+      "sha256": "2abdc0ce5cf7d669348bede799703a5bf4bab143a3a0e96cb6c801d51e24fc36",
+      "matches_head": true
+    },
+    {
+      "path": "src/benchmark/scripted.py",
+      "sha256": "20e18add03ed20aedc30f9ad35352bf8dfea5038ae448fe5446ac340f56f6a4d",
+      "matches_head": true
+    }
+  ],
+  "unchanged_count": 49,
+  "agent_benchmarks_executed": false,
+  "current_code_cache_replay": {
+    "exit_code": 0,
+    "accepted_stages": 12,
+    "cache_hits": 12,
+    "candidate_count": 3,
+    "error_count": 0,
+    "all_unapproved": true,
+    "readiness": {
+      "cluster_01_v3_proposal_01": "blocked_for_human_review",
+      "cluster_01_v3_proposal_02": "blocked_for_human_review",
+      "cluster_01_v3_proposal_03": "blocked_for_human_review"
+    }
+  },
+  "implementation_sha256": {
+    "src/cli.py": "87009dc98e7c258ce0970e41417c5cd0a14b7274349b303286b99198472789b2",
+    "src/eval_validity.py": "14eb319244629374ffcadd8ab83e5fd40de954377695172a2242f12fba09d599",
+    "src/validity_schema.py": "afe6042544ed6c77881f9106a5279651a6ce72e11f2bace4b2bcef47785c7098",
+    "src/validity_regression.py": "e6c2401cd72d660814a65a6d8c14bd0a36725b1787416f10f2dd08f80b6ab58d",
+    "src/validity_checks.py": "c38a89c228ac90bcec73d89229223833e90b088dd6304cd25c3feb04fc619c04",
+    "src/validity_pipeline.py": "c2e6a119f7b27223b492826a2f1ba5cc294b7d4c2ad52049ae0c7899f640821d"
+  }
+}

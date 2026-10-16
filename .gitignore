@@ -8,3 +8,6 @@ outputs/*
 !outputs/benchmark_baseline/
 !outputs/benchmark_guided/
 !outputs/comparison/
+
+!outputs/proposals_v3_review/
+!outputs/validity_regression_v3_final/

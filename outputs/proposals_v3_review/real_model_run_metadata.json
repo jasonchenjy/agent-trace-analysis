@@ -1,0 +1,140 @@
+{
+  "pipeline_version": 3,
+  "proposal_schema_version": 2,
+  "design_schema_version": "validity-design-1",
+  "assessment_schema_version": "validity-assessment-1",
+  "generator_version": "validity-generator-1",
+  "critic_version": "validity-critic-1",
+  "recheck_version": "validity-critic-1-recheck-1",
+  "revision_version": "validity-revision-1",
+  "validation_version": "proposal-references-v2",
+  "gate_version": "human-review-v1",
+  "offline_check_version": "offline-validity-1",
+  "provider": "openai_codex",
+  "model": "gpt-6-astra",
+  "client_config": {
+    "provider": "openai_codex",
+    "sdk_version": "0.162.1",
+    "adapter_version": "codex-v1",
+    "sandbox": "read_only",
+    "output_mode": "output_schema",
+    "config_overrides": [
+      "features.shell_tool=false",
+      "features.apps=false",
+      "features.multi_agent=false",
+      "web_search=\"disabled\"",
+      "mcp_servers={}"
+    ]
+  },
+  "selected_cluster_id": "cluster_01",
+  "requested_proposal_count": 3,
+  "input_paths": {
+    "taxonomy": "outputs/discovery/discovered_taxonomy.json",
+    "discoveries": "outputs/discovery/trace_discoveries.jsonl",
+    "review": "reviews/human_review.json",
+    "traces": "data/candidate_traces.jsonl"
+  },
+  "input_source_hashes": {
+    "taxonomy": "a7b73826a146604b3fa8e26ef1d89388d1f4b63861b569e4c001fdc58461a073",
+    "discoveries": "2ca350cb59f578ac8f9e1fb52a4cee6118707b5a2ce969cb41828aa7571cf7c1",
+    "review": "32e369e50bde227351387bd5687a75958f5d6977571721002179218e9b965478",
+    "traces": "3b68b4ffc6b6b1750503c5b6af8cebfcc59e66c68d5169c5038f289467379f66"
+  },
+  "execution_status": "no_agent_or_robustness_execution",
+  "semantic_validation": "human_review_required",
+  "status": "completed",
+  "generated_proposal_count": 3,
+  "error_count": 0,
+  "cache": [
+    {
+      "stage": "validity_generator",
+      "proposal_id": "cluster_01_v3_proposal_01",
+      "key": "00c196bcee3039f41a3412e9f711f7d55502a15ebb2f8c0d131c720f0c5336fa",
+      "hit": true,
+      "accepted": true
+    },
+    {
+      "stage": "validity_critic",
+      "proposal_id": "cluster_01_v3_proposal_01",
+      "key": "530939412c7072c33b577a12ddf379695384a737f8f2ece0fc123c5fcddf3cea",
+      "hit": false,
+      "accepted": true
+    },
+    {
+      "stage": "validity_revision",
+      "proposal_id": "cluster_01_v3_proposal_01",
+      "key": "5dfc3871176fc0d5aee2760f33cbc7dd8a33e3666b04de14e397c24ed3631973",
+      "hit": false,
+      "accepted": true
+    },
+    {
+      "stage": "validity_critic",
+      "proposal_id": "cluster_01_v3_proposal_01",
+      "key": "8e29a68348af0f124caa44958b3767445f75404648cccd13d07606eac7f79b6f",
+      "hit": false,
+      "accepted": true
+    },
+    {
+      "stage": "validity_generator",
+      "proposal_id": "cluster_01_v3_proposal_02",
+      "key": "26888e81fa16eb529453ab5f4b0c1e622db3ef7e05cbeaa63e36319474fd7df8",
+      "hit": false,
+      "accepted": true
+    },
+    {
+      "stage": "validity_critic",
+      "proposal_id": "cluster_01_v3_proposal_02",
+      "key": "522bcca4ee155222e44656755865963fca6b6aa2455ae36e3a293de4368466d6",
+      "hit": false,
+      "accepted": true
+    },
+    {
+      "stage": "validity_revision",
+      "proposal_id": "cluster_01_v3_proposal_02",
+      "key": "fd50858dd566f4f8f66286df784640bad530676f72396716efa75dc72cf3e301",
+      "hit": false,
+      "accepted": true
+    },
+    {
+      "stage": "validity_critic",
+      "proposal_id": "cluster_01_v3_proposal_02",
+      "key": "59abb4746f3ad43e19cb1abd63304827b568f25c8e35d5d92631a062d39f3c56",
+      "hit": false,
+      "accepted": true
+    },
+    {
+      "stage": "validity_generator",
+      "proposal_id": "cluster_01_v3_proposal_03",
+      "key": "1dca955cd00aae03650b9780f138876199bf9e14afc2218efc14e9dbc743a60d",
+      "hit": false,
+      "accepted": true
+    },
+    {
+      "stage": "validity_critic",
+      "proposal_id": "cluster_01_v3_proposal_03",
+      "key": "2d91207a28902249ef4e431ba1c2f756e85836bcad1a375fb5aafcb19b7b07a8",
+      "hit": false,
+      "accepted": true
+    },
+    {
+      "stage": "validity_revision",
+      "proposal_id": "cluster_01_v3_proposal_03",
+      "key": "b2380601d97c0803ad543acc4437a02e9b4f0be89eca6a8aaa150210c3009966",
+      "hit": false,
+      "accepted": true
+    },
+    {
+      "stage": "validity_critic",
+      "proposal_id": "cluster_01_v3_proposal_03",
+      "key": "20b3a8bf338e6dd6bda3cf432f2017445d31b96747a6cd3577d09ca337375aec",
+      "hit": false,
+      "accepted": true
+    }
+  ],
+  "cache_hits": 1,
+  "readiness": {
+    "cluster_01_v3_proposal_01": "blocked_for_human_review",
+    "cluster_01_v3_proposal_02": "blocked_for_human_review",
+    "cluster_01_v3_proposal_03": "blocked_for_human_review"
+  }
+}
